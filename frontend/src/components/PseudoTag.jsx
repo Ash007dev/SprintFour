@@ -1,42 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-
-// Why each entity type gets flagged - plain language reasons for Marcus
-const TYPE_REASONS = {
-  FULL_NAME: 'A full name can directly identify a specific person.',
-  FIRST_NAME: 'A first name, combined with other details, can identify someone.',
-  LAST_NAME: 'A last name narrows identification, especially with context.',
-  EMAIL: 'An email address is a unique identifier that directly maps to one person.',
-  PHONE: 'A phone number is a direct personal identifier tied to an individual.',
-  ADDRESS: 'A physical address reveals where someone lives or works.',
-  STREET: 'A street name is part of a physical address that locates someone.',
-  CITY: 'A city name, combined with other details, helps locate someone.',
-  STATE: 'A state or region, combined with other details, narrows location.',
-  ZIP_CODE: 'A zip or postal code narrows someone to a small geographic area.',
-  SSN: 'A Social Security Number is a uniquely assigned government identifier.',
-  DATE_OF_BIRTH: 'A date of birth is a key identifier used in identity verification.',
-  MEDICAL_RECORD_NUMBER: 'A medical record number links to private health data.',
-  DIAGNOSIS: 'A medical diagnosis is protected health information under HIPAA.',
-  MEDICATION: 'Medication details reveal private health conditions.',
-  INSURANCE_ID: 'An insurance ID links to personal health and financial records.',
-  ACCOUNT_NUMBER: 'A bank account number gives direct access to financial identity.',
-  ROUTING_NUMBER: 'A routing number, paired with account data, identifies a bank relationship.',
-  CREDIT_CARD_NUMBER: 'A credit card number is a financial identifier that must be protected.',
-  URL: 'A URL can contain personal identifiers like usernames or profile links.',
-  IP_ADDRESS: 'An IP address can be used to trace online activity to a location.',
-  USERNAME: 'A username can be linked across platforms to identify a person.',
-  PASSWORD: 'A password is a private credential that must never be exposed.',
-  ORGANIZATION_NAME: 'An organization name, in context, can narrow who someone is.',
-  NPI: 'A National Provider Identifier uniquely identifies a healthcare provider.',
-  BUILDING_NUMBER: 'A building number is part of a precise physical address.',
-  COUNTRY: 'A country name, combined with other details, helps locate someone.',
-  FINANCIAL_ID: 'A financial identifier links to specific accounts or registrations.',
-  DATE: 'A date, in context with other details, can help identify someone.',
-  DOMAIN: 'A domain name can be linked to a specific organization or individual.',
-};
-
-function getReasonForType(entityType) {
-  return TYPE_REASONS[entityType] || `This was identified as ${entityType.replace(/_/g, ' ').toLowerCase()}, which is personally identifiable information that could help identify someone.`;
-}
+import { getReasonForType, humanizeEntityType } from '../utils/explainability';
 
 export default function PseudoTag({ entity }) {
   const [expanded, setExpanded] = useState(false);
@@ -60,10 +23,7 @@ export default function PseudoTag({ entity }) {
     entity.confidence >= 0.6 ? 'Medium' :
     'Low';
 
-  const humanType = entity.entity_type
-    .replace(/_/g, ' ')
-    .toLowerCase()
-    .replace(/\b\w/g, c => c.toUpperCase());
+  const humanType = humanizeEntityType(entity.entity_type);
 
   const reason = getReasonForType(entity.entity_type);
 

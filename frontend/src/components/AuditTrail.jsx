@@ -1,3 +1,11 @@
+const AUDIT_MEANINGS = {
+  CLEAN: 'Verifier saw no exposed personal information.',
+  RISK: 'Verifier saw details that may still identify someone.',
+  MISS: 'Verifier found something that should have been hidden.',
+  DETECT: 'Detector found and replaced sensitive text.',
+  SCORE: 'The trust score was recorded or updated.',
+};
+
 export default function AuditTrail({ entries }) {
   if (!entries || entries.length === 0) return null;
 
@@ -56,6 +64,11 @@ export default function AuditTrail({ entries }) {
         </svg>
         Audit Trail
       </div>
+      <div className="border-2 border-primary border-b-0 bg-surface-high p-3">
+        <p className="font-[var(--font-body)] text-xs leading-relaxed text-secondary">
+          Each row explains what happened, what text it affected, and whether it was found by detection or verification.
+        </p>
+      </div>
 
       <div className="border-4 border-primary bg-surface max-h-96 overflow-y-auto">
         {entries.map((entry, i) => (
@@ -67,6 +80,9 @@ export default function AuditTrail({ entries }) {
               {getLabel(entry.type)}
             </div>
             <div className="flex-grow min-w-0">
+              <p className="font-[var(--font-mono)] text-[10px] uppercase tracking-wider text-secondary mb-1">
+                {AUDIT_MEANINGS[entry.type] || 'Audit information recorded for transparency.'}
+              </p>
               <p className="font-[var(--font-body)] text-sm leading-snug">
                 {entry.description}
               </p>

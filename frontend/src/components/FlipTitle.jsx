@@ -2,52 +2,25 @@ import { useState, useEffect, useRef } from 'react';
 
 const WORDS = ['Conseal', 'Glass Box'];
 const HOLD_MS = 3500;
-const STAGGER_MS = 50;
+const FLIP_MS = 620;
+const STAGGER_MS = 45;
+const MAX_CHARS = Math.max(...WORDS.map(word => word.length));
 
 export default function FlipTitle({ onClick, className = '' }) {
-  const [currentWord, setCurrentWord] = useState(WORDS[0]);
-  const [animatingIndices, setAnimatingIndices] = useState(new Set());
-  const wordIndexRef = useRef(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [flipping, setFlipping] = useState(false);
   const timeoutsRef = useRef([]);
 
   useEffect(() => {
     const cycle = () => {
-      const nextIdx = (wordIndexRef.current + 1) % WORDS.length;
-      const nextWord = WORDS[nextIdx];
-      const maxLen = Math.max(currentWord.length, nextWord.length);
+      setFlipping(true);
 
-      // Stagger each letter: fade out current, fade in next
-      for (let i = 0; i < maxLen; i++) {
-        const t = setTimeout(() => {
-          // Mark letter as animating (fade out)
-          setAnimatingIndices(prev => new Set([...prev, i]));
+      const commitTimer = setTimeout(() => {
+        setActiveIndex(index => (index + 1) % WORDS.length);
+        setFlipping(false);
+      }, FLIP_MS + MAX_CHARS * STAGGER_MS);
 
-          // After fade out, swap the character and fade in
-          const swapT = setTimeout(() => {
-            setCurrentWord(prev => {
-              const padded = prev.padEnd(maxLen);
-              const chars = padded.split('');
-              chars[i] = nextWord[i] || '';
-              return chars.join('');
-            });
-            // Remove from animating (triggers fade in)
-            setAnimatingIndices(prev => {
-              const next = new Set(prev);
-              next.delete(i);
-              return next;
-            });
-          }, 150);
-          timeoutsRef.current.push(swapT);
-        }, i * STAGGER_MS);
-        timeoutsRef.current.push(t);
-      }
-
-      // Trim trailing spaces after animation completes
-      const cleanupT = setTimeout(() => {
-        setCurrentWord(nextWord);
-        wordIndexRef.current = nextIdx;
-      }, maxLen * STAGGER_MS + 300);
-      timeoutsRef.current.push(cleanupT);
+      timeoutsRef.current.push(commitTimer);
     };
 
     const interval = setInterval(cycle, HOLD_MS);
@@ -58,7 +31,21 @@ export default function FlipTitle({ onClick, className = '' }) {
     };
   }, []);
 
-  const chars = currentWord.split('');
+  const nextIndex = (activeIndex + 1) % WORDS.length;
+
+  const renderWord = (word, mode) => (
+    <span className={`flip-title-word flip-title-word-${mode}`}>
+      {Array.from(word).map((char, index) => (
+        <span
+          key={`${word}-${index}`}
+          className={`flip-title-letter ${char === ' ' ? 'flip-title-space' : ''}`}
+          style={{ transitionDelay: `${index * STAGGER_MS}ms` }}
+        >
+          {char === ' ' ? '\u00A0' : char}
+        </span>
+      ))}
+    </span>
+  );
 
   return (
     <button
@@ -66,19 +53,10 @@ export default function FlipTitle({ onClick, className = '' }) {
       className={`font-[var(--font-headline)] font-black tracking-tighter text-primary hover:opacity-80 transition-opacity cursor-pointer inline-flex items-baseline ${className}`}
       aria-label="Conseal / Glass Box"
     >
-      {chars.map((char, i) => (
-        <span
-          key={i}
-          className="inline-block transition-all duration-150 ease-in-out"
-          style={{
-            opacity: animatingIndices.has(i) ? 0 : 1,
-            transform: animatingIndices.has(i) ? 'translateY(-8px)' : 'translateY(0)',
-            minWidth: char === ' ' ? '0.25em' : undefined,
-          }}
-        >
-          {char === ' ' ? '\u00A0' : char}
-        </span>
-      ))}
+      <span className={`flip-title-shell ${flipping ? 'is-flipping' : ''}`} style={{ '--flip-chars': MAX_CHARS }}>
+        {renderWord(WORDS[activeIndex], 'current')}
+        {flipping && renderWord(WORDS[nextIndex], 'next')}
+      </span>
     </button>
   );
 }

@@ -1,6 +1,70 @@
+import { useMemo, useState } from 'react';
+import {
+  explainFindingType,
+  getCategoryForType,
+  getReasonForType,
+  humanizeEntityType,
+} from '../utils/explainability';
+
 export default function SummaryScreen({ result, verification, onReset, onBackToOutput }) {
+  const [activeCategory, setActiveCategory] = useState(result.category_breakdown[0]?.category || '');
   const isVerified = !!verification;
   const trustScore = isVerified ? verification.adjusted_trust_score : result.trust_score;
+  const findings = useMemo(() => verification?.findings || [], [verification]);
+
+  const entitiesByCategory = useMemo(() => {
+    const groups = {};
+    for (const entity of result.entities || []) {
+      const category = getCategoryForType(entity.entity_type);
+      if (!groups[category]) groups[category] = [];
+      groups[category].push(entity);
+    }
+    return groups;
+  }, [result.entities]);
+
+  const selectedCategory = activeCategory || result.category_breakdown[0]?.category || '';
+  const selectedEntities = entitiesByCategory[selectedCategory] || [];
+
+  const findingCounts = useMemo(() => {
+    return findings.reduce((counts, finding) => {
+      counts[finding.type] = (counts[finding.type] || 0) + 1;
+      return counts;
+    }, { CLEAN: 0, RISK: 0, MISS: 0 });
+  }, [findings]);
+
+  const auditSummary = useMemo(() => {
+    const events = [];
+
+    for (const entity of result.entities || []) {
+      events.push({
+        type: 'Hidden',
+        label: `${entity.original_text} became ${entity.pseudonym}`,
+        detail: getReasonForType(entity.entity_type),
+      });
+    }
+
+    if (isVerified) {
+      for (const finding of findings) {
+        events.push({
+          type: humanizeEntityType(finding.type),
+          label: finding.description,
+          detail: finding.affected_text
+            ? `Affected text: "${finding.affected_text}"`
+            : explainFindingType(finding.type),
+        });
+      }
+    }
+
+    events.push({
+      type: 'Kept visible',
+      label: 'Remaining text stayed readable',
+      detail: isVerified
+        ? 'The first pass did not classify it as personal information, and the verifier checked the remaining context for missed PII or re-identification risk.'
+        : 'The first pass did not classify it as personal information. Run verification to independently check the remaining context.',
+    });
+
+    return events;
+  }, [findings, isVerified, result.entities]);
 
   const qualifier = isVerified
     ? trustScore >= 8.5
@@ -53,20 +117,87 @@ export default function SummaryScreen({ result, verification, onReset, onBackToO
           {/* Stats Grid */}
           <div className="md:col-span-7 grid grid-cols-2 gap-2 p-6 bg-surface border-4 border-primary neo-shadow-lg">
             {result.category_breakdown.map((cat, i) => (
-              <div
+              <button
                 key={i}
-                className="p-4 bg-surface border-2 border-primary flex flex-col justify-between neo-shadow-sm hover:bg-surface-high transition-colors"
+                type="button"
+                onClick={() => setActiveCategory(cat.category)}
+                aria-pressed={selectedCategory === cat.category}
+                className={`summary-tab text-left p-4 border-2 border-primary flex flex-col justify-between neo-shadow-sm cursor-pointer min-h-32 ${
+                  selectedCategory === cat.category
+                    ? 'bg-primary text-on-primary'
+                    : 'bg-surface hover:bg-surface-high'
+                }`}
               >
-                <span className="font-[var(--font-headline)] text-4xl font-bold text-primary block mb-2">
+                <span className={`font-[var(--font-headline)] text-4xl font-bold block mb-2 ${
+                  selectedCategory === cat.category ? 'text-on-primary' : 'text-primary'
+                }`}>
                   {cat.count}
                 </span>
-                <span className="font-[var(--font-mono)] text-xs text-on-background uppercase border-t-2 border-primary pt-2 tracking-wider font-bold">
+                <span className={`font-[var(--font-mono)] text-xs uppercase border-t-2 pt-2 tracking-wider font-bold ${
+                  selectedCategory === cat.category
+                    ? 'text-on-primary border-on-primary'
+                    : 'text-on-background border-primary'
+                }`}>
                   {cat.category}
                 </span>
-              </div>
+              </button>
             ))}
           </div>
         </div>
+
+        {selectedCategory && (
+          <div className="border-4 border-primary bg-surface neo-shadow-lg">
+            <div className="bg-primary text-on-primary px-6 py-3 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+              <div>
+                <h2 className="font-[var(--font-headline)] text-2xl font-bold uppercase tracking-tight">
+                  {selectedCategory}
+                </h2>
+                <p className="font-[var(--font-mono)] text-xs uppercase tracking-wider">
+                  {selectedEntities.length} flagged item{selectedEntities.length !== 1 ? 's' : ''}
+                </p>
+              </div>
+              <p className="font-[var(--font-body)] text-sm max-w-md">
+                These are the exact values hidden in this category and the plain-English reason for each decision.
+              </p>
+            </div>
+
+            <div className="divide-y-2 divide-primary max-h-96 overflow-y-auto">
+              {selectedEntities.map((entity) => (
+                <div key={`${entity.pseudonym}-${entity.start}`} className="px-6 py-4 grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto] gap-4">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <span className="font-[var(--font-mono)] text-xs px-2 py-1 bg-surface-high border-2 border-primary uppercase font-bold">
+                        {entity.pseudonym}
+                      </span>
+                      <span className="font-[var(--font-mono)] text-xs text-secondary uppercase">
+                        {humanizeEntityType(entity.entity_type)}
+                      </span>
+                    </div>
+                    <p className="font-[var(--font-body)] text-sm leading-relaxed">
+                      <span className="font-semibold">Flagged value:</span> {entity.original_text}
+                    </p>
+                    <p className="font-[var(--font-body)] text-sm leading-relaxed text-secondary mt-1">
+                      <span className="font-semibold text-on-background">Why:</span> {getReasonForType(entity.entity_type)}
+                    </p>
+                  </div>
+                  <div className="md:text-right">
+                    <span className="font-[var(--font-mono)] text-xs uppercase text-secondary block mb-1">
+                      Confidence
+                    </span>
+                    <span className="font-[var(--font-headline)] text-2xl font-bold">
+                      {Math.round(entity.confidence * 100)}%
+                    </span>
+                  </div>
+                </div>
+              ))}
+              {selectedEntities.length === 0 && (
+                <div className="px-6 py-4 font-[var(--font-body)] text-sm text-secondary">
+                  No individual items were returned for this category.
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Detailed Verification Findings */}
         {isVerified && verification.findings && verification.findings.length > 0 && (
@@ -86,6 +217,21 @@ export default function SummaryScreen({ result, verification, onReset, onBackToO
               <p className="font-[var(--font-body)] text-base font-medium">
                 {verification.overall_assessment}
               </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+                {['CLEAN', 'RISK', 'MISS'].map((type) => (
+                  <div key={type} className="border-2 border-primary bg-surface p-3">
+                    <div className="font-[var(--font-headline)] text-2xl font-bold">
+                      {findingCounts[type] || 0}
+                    </div>
+                    <div className="font-[var(--font-mono)] text-xs uppercase font-bold mb-1">
+                      {humanizeEntityType(type)}
+                    </div>
+                    <p className="font-[var(--font-body)] text-xs leading-relaxed text-secondary">
+                      {explainFindingType(type)}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Individual findings */}
@@ -133,6 +279,35 @@ export default function SummaryScreen({ result, verification, onReset, onBackToO
             </div>
           </div>
         )}
+
+        {/* Detailed audit summary */}
+        <div className="border-4 border-primary bg-surface neo-shadow-lg">
+          <div className="bg-primary text-on-primary px-6 py-3 flex items-center justify-between">
+            <h2 className="font-[var(--font-headline)] text-xl font-bold uppercase tracking-tight">
+              Detailed Audit Summary
+            </h2>
+            <span className="font-[var(--font-mono)] text-xs uppercase">
+              {auditSummary.length} event{auditSummary.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+          <div className="divide-y-2 divide-primary max-h-96 overflow-y-auto">
+            {auditSummary.map((event, index) => (
+              <div key={`${event.type}-${index}`} className="px-6 py-4 grid grid-cols-1 md:grid-cols-[9rem_minmax(0,1fr)] gap-3 hover:bg-surface-high transition-colors">
+                <span className="font-[var(--font-mono)] text-xs uppercase font-bold">
+                  {event.type}
+                </span>
+                <div>
+                  <p className="font-[var(--font-body)] text-sm font-semibold leading-relaxed">
+                    {event.label}
+                  </p>
+                  <p className="font-[var(--font-body)] text-sm text-secondary leading-relaxed mt-1">
+                    {event.detail}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* What was found and why */}
         <div className="border-4 border-primary bg-surface neo-shadow p-6">

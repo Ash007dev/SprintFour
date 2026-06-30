@@ -44,7 +44,6 @@ function App() {
             verification={verification}
             onVerified={handleVerified}
             onViewSummary={handleViewSummary}
-            onReset={handleReset}
           />
         )}
         {screen === 'summary' && result && (

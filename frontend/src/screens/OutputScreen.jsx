@@ -3,7 +3,7 @@ import PseudoTag from '../components/PseudoTag';
 import AuditTrail from '../components/AuditTrail';
 import { verifyDocument } from '../api';
 
-export default function OutputScreen({ result, verification, onVerified, onViewSummary, onReset }) {
+export default function OutputScreen({ result, verification, onVerified, onViewSummary }) {
   const [verifying, setVerifying] = useState(false);
   const [verifyError, setVerifyError] = useState(null);
 
