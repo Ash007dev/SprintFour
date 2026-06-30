@@ -1,0 +1,82 @@
+{
+  "pseudonymized_text": "Hello, my name is [FIRST_NAME_1] [LAST_NAME_1] and I live at [BUILDING_NUMBER_1] [STREET_1], [CITY_1]. My email is [EMAIL_1].",
+  "entities": [
+    {
+      "original_text": "Sarah",
+      "pseudonym": "[FIRST_NAME_1]",
+      "entity_type": "FIRST_NAME",
+      "confidence": 0.95,
+      "start": 18,
+      "end": 23,
+      "pseudonym_start": 18,
+      "pseudonym_end": 32
+    },
+    {
+      "original_text": "Johnson",
+      "pseudonym": "[LAST_NAME_1]",
+      "entity_type": "LAST_NAME",
+      "confidence": 0.95,
+      "start": 24,
+      "end": 31,
+      "pseudonym_start": 33,
+      "pseudonym_end": 46
+    },
+    {
+      "original_text": "742",
+      "pseudonym": "[BUILDING_NUMBER_1]",
+      "entity_type": "BUILDING_NUMBER",
+      "confidence": 0.9,
+      "start": 46,
+      "end": 49,
+      "pseudonym_start": 61,
+      "pseudonym_end": 80
+    },
+    {
+      "original_text": "Evergreen Terrace",
+      "pseudonym": "[STREET_1]",
+      "entity_type": "STREET",
+      "confidence": 0.9,
+      "start": 50,
+      "end": 67,
+      "pseudonym_start": 81,
+      "pseudonym_end": 91
+    },
+    {
+      "original_text": "Springfield",
+      "pseudonym": "[CITY_1]",
+      "entity_type": "CITY",
+      "confidence": 0.9,
+      "start": 69,
+      "end": 80,
+      "pseudonym_start": 93,
+      "pseudonym_end": 101
+    },
+    {
+      "original_text": "sarah.j@example.com",
+      "pseudonym": "[EMAIL_1]",
+      "entity_type": "EMAIL",
+      "confidence": 0.95,
+      "start": 94,
+      "end": 113,
+      "pseudonym_start": 115,
+      "pseudonym_end": 124
+    }
+  ],
+  "trust_score": 9.6,
+  "category_breakdown": [
+    {
+      "category": "Addresses",
+      "count": 3
+    },
+    {
+      "category": "Names",
+      "count": 2
+    },
+    {
+      "category": "Email Addresses",
+      "count": 1
+    }
+  ],
+  "summary": "This document was scanned and 6 pieces of personal information were identified: 3 addresses, 2 names, and 1 email addresse. Each item has been replaced with a descriptive label that shows what type of information was there without revealing the actual sensitive data. The system is highly confident in all of the labels applied. You can trust that the detected items have been correctly identified and categorized.",
+  "entity_count": 6
+}

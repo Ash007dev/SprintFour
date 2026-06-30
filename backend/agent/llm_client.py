@@ -37,8 +37,8 @@ GEMINI_FALLBACK_MODEL = os.getenv("GEMINI_FALLBACK_MODEL", "gemini-2.0-flash")
 # Groq model — using llama-3.3-70b-versatile for quality on free tier
 GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
-# Timeout for API calls (seconds)
-LLM_TIMEOUT = int(os.getenv("LLM_TIMEOUT", "60"))
+# Timeout for API calls (seconds) — 120s default to handle Gemini 2.5 Flash thinking time
+LLM_TIMEOUT = int(os.getenv("LLM_TIMEOUT", "120"))
 
 
 class LLMError(Exception):

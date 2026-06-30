@@ -160,9 +160,10 @@ def _validate_and_fix_entities(
     LLMs sometimes miscalculate character offsets. This function:
     1. Checks if text[start:end] matches original_text
     2. If not, searches for the original_text in the document and fixes the span
-    3. Removes entities that can't be found at all
-    4. Removes overlapping entities (keeps higher confidence)
-    5. Sorts by start position
+    3. Finds ALL occurrences of each entity text (not just the first)
+    4. Removes entities that can't be found at all
+    5. Removes overlapping entities (keeps higher confidence)
+    6. Sorts by start position
     """
     validated = []
 
@@ -206,20 +207,37 @@ def _validate_and_fix_entities(
                     f"Could not find entity '{search_text}' in document — removing"
                 )
 
-    # Handle multiple occurrences of the same entity text
-    # Group by original_text and ensure all occurrences are captured
-    entity_texts = {}
+    # Find ALL occurrences of each detected entity text in the document.
+    # The LLM may only report one occurrence but the same PII often
+    # appears multiple times (e.g., a name in the header and the sign-off).
+    all_entities = []
+    seen_spans = set()  # (start, end) tuples to avoid duplicates
+
     for entity in validated:
-        key = entity.original_text.lower()
-        if key not in entity_texts:
-            entity_texts[key] = entity
-        # Keep the first occurrence's instance_id for consistency
+        search = entity.original_text
+        start = 0
+        while True:
+            idx = text.find(search, start)
+            if idx == -1:
+                break
+            span_key = (idx, idx + len(search))
+            if span_key not in seen_spans:
+                seen_spans.add(span_key)
+                all_entities.append(DetectedEntity(
+                    original_text=search,
+                    start=idx,
+                    end=idx + len(search),
+                    entity_type=entity.entity_type,
+                    confidence=entity.confidence,
+                    instance_id=entity.instance_id,
+                ))
+            start = idx + 1
 
     # Remove overlapping entities (keep higher confidence)
-    validated.sort(key=lambda e: (e.start, -(e.end - e.start)))
+    all_entities.sort(key=lambda e: (e.start, -(e.end - e.start)))
     non_overlapping = []
 
-    for entity in validated:
+    for entity in all_entities:
         overlaps = False
         for existing in non_overlapping:
             if entity.start < existing.end and entity.end > existing.start:
