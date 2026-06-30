@@ -1,11 +1,22 @@
 # Glass Box
 
+[![Live App](https://img.shields.io/badge/Live_App-Vercel-black?style=for-the-badge)](https://glass-box-ecru.vercel.app)
+[![Backend API](https://img.shields.io/badge/Backend_API-Render-46E3B7?style=for-the-badge)](https://glass-box-api.onrender.com/health)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![FastAPI](https://img.shields.io/badge/FastAPI-Python-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-Frontend-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+
 Glass Box is a trust-focused PII pseudonymization tool. It lets a user paste or upload a sensitive document, replaces personally identifiable information with readable labels, and explains every decision in plain English.
 
 The project was built for a skeptical user who does not want to take privacy tooling on faith. Instead of only showing black bars or a final score, Glass Box shows what was hidden, why it was hidden, what stayed visible, and what a second verifier found after the first pass.
 
-Live app: https://glass-box-ecru.vercel.app  
-Backend API: https://glass-box-api.onrender.com
+## Application
+
+Hosted site: https://glass-box-ecru.vercel.app  
+Backend API: https://glass-box-api.onrender.com  
+Health check: https://glass-box-api.onrender.com/health
+
+To run locally, start the FastAPI backend on port `8000`, then start the Vite frontend on port `5173`. Full instructions are below.
 
 ## What It Does
 
@@ -30,27 +41,25 @@ Glass Box answers that question through transparency:
 
 ## Architecture
 
-```text
-Document input
-  |
-  v
-Presidio base detection
-  |
-  v
-Gemini contextual PII agent
-  |
-  v
-Pseudonymized output with entity metadata
-  |
-  v
-Groq verifier agent
-  |
-  v
-Trust summary, audit trail, and adjusted score
+```mermaid
+flowchart TD
+    A[User pastes text or uploads a file] --> B[FastAPI backend]
+    B --> C[File parser when needed]
+    C --> D[Presidio base detection]
+    B --> D
+    D --> E[Gemini contextual PII agent]
+    E --> F[Pseudonymized document with entity metadata]
+    F --> G[React review experience]
+    F --> H[Groq verifier agent]
+    H --> I[Clean, Risk, and Miss findings]
+    I --> J[Adjusted trust score]
+    G --> K[Inline reasons, category details, and audit trail]
+    J --> K
 ```
 
 ## Tech Stack
 
+- Dataset exploration: ai4privacy/pii-masking-43k
 - Frontend: React 19, Vite, Tailwind CSS
 - Backend: FastAPI, Pydantic, Uvicorn
 - PII base pass: Microsoft Presidio
@@ -59,6 +68,8 @@ Trust summary, audit trail, and adjusted score
 - Deployment: Vercel for frontend, Render for backend
 
 ## Local Setup
+
+The hosted site is available above. Use the steps below only if you want to run the full-stack app locally.
 
 ### 1. Install backend dependencies
 
