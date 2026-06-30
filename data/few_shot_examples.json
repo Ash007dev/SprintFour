@@ -1,0 +1,60 @@
+[
+  {
+    "input_text": "In our video conference, discuss the role of evidence in the arbitration process involving Dr. Marvin Rolfson and Julius Daugherty.",
+    "detected_entities": [
+      {"original_text": "Dr. Marvin Rolfson", "entity_type": "FULLNAME"},
+      {"original_text": "Julius Daugherty", "entity_type": "FULLNAME"}
+    ]
+  },
+  {
+    "input_text": "Please write an email to Hazel Turcotte at Annetta69@hotmail.com discussing the latest updates in consumer protection laws.",
+    "detected_entities": [
+      {"original_text": "Hazel Turcotte", "entity_type": "FULLNAME"},
+      {"original_text": "Annetta69@hotmail.com", "entity_type": "EMAIL"}
+    ]
+  },
+  {
+    "input_text": "Create a list of mental health support organizations in Lake Pedroberg and Bernardchester for Jessie Witting to share with their network.",
+    "detected_entities": [
+      {"original_text": "Lake Pedroberg", "entity_type": "CITY"},
+      {"original_text": "Bernardchester", "entity_type": "CITY"},
+      {"original_text": "Jessie Witting", "entity_type": "FULLNAME"}
+    ]
+  },
+  {
+    "input_text": "13. Create a risk management framework for protecting sensitive customer data, including Tyshawn.Rath90@hotmail.com, ZxC55mrNmIe4, and 5287761891196274.",
+    "detected_entities": [
+      {"original_text": "Tyshawn.Rath90@hotmail.com", "entity_type": "EMAIL"},
+      {"original_text": "ZxC55mrNmIe4", "entity_type": "PASSWORD"},
+      {"original_text": "5287761891196274", "entity_type": "CREDITCARDNUMBER"}
+    ]
+  },
+  {
+    "input_text": "Prepare a grant proposal for Zola Doyle to study the effects of peer pressure on Neither risk-taking behavior.",
+    "detected_entities": [
+      {"original_text": "Zola", "entity_type": "FIRSTNAME"},
+      {"original_text": "Doyle", "entity_type": "LASTNAME"}
+    ]
+  },
+  {
+    "input_text": "Please create a legal analysis of the sports betting laws in Montana and send it to Nichole.Kulas96@gmail.com.",
+    "detected_entities": [
+      {"original_text": "Montana", "entity_type": "STATE"},
+      {"original_text": "Nichole.Kulas96@gmail.com", "entity_type": "EMAIL"}
+    ]
+  },
+  {
+    "input_text": "Please develop a survey for Heller - Dibbert to assess the impact of Industrial-Organizational Psychology interventions on employee well-being at 578 Casimer Passage.",
+    "detected_entities": [
+      {"original_text": "Heller - Dibbert", "entity_type": "NAME"},
+      {"original_text": "578", "entity_type": "BUILDINGNUMBER"},
+      {"original_text": "Casimer Passage", "entity_type": "STREET"}
+    ]
+  },
+  {
+    "input_text": "7. HIPAA guidelines for protecting patients' 146.229.205.216 in telemedicine consultations.",
+    "detected_entities": [
+      {"original_text": "146.229.205.216", "entity_type": "IPV4"}
+    ]
+  }
+]

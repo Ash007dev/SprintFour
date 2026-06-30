@@ -1,0 +1,27 @@
+# Environment files (contain API keys)
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cached dataset
+.cache/
+
+# Node (for frontend later)
+node_modules/
