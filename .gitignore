@@ -25,3 +25,4 @@ Thumbs.db
 
 # Node (for frontend later)
 node_modules/
+frontend/dist/

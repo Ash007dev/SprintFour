@@ -12,10 +12,11 @@ The app never hangs silently — clear, calm error states for every failure mode
 
 import logging
 import os
+import time
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.agent.pseudonymizer import pseudonymize_document, PseudonymizationError
@@ -30,19 +31,66 @@ from backend.models import (
 # Load environment variables
 load_dotenv()
 
-# Configure logging
+# Configure logging with rich formatting
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    format="%(asctime)s %(message)s",
+    datefmt="%H:%M:%S",
 )
 logger = logging.getLogger(__name__)
+
+# Suppress noisy third-party loggers
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("google_genai").setLevel(logging.WARNING)
+
+
+# ---------------------------------------------------------------------------
+# Rich terminal logging helpers
+# ---------------------------------------------------------------------------
+
+def _log_banner():
+    """Print startup banner."""
+    banner = r"""
+  +---------------------------------------------------+
+  |                                                   |
+  |    ____  _                  ____                   |
+  |   / ___|| | __ _ ___ ___  | __ )  _____  __       |
+  |  | |  _ | |/ _` / __/ __| |  _ \ / _ \ \/ /       |
+  |  | |_| || | (_| \__ \__ \ | |_) | (_) >  <        |
+  |   \____||_|\__,_|___/___/ |____/ \___/_/\_\       |
+  |                                                   |
+  |   PII Pseudonymization API v1.0.0                 |
+  |   Architectural Integrity Secured.                |
+  |                                                   |
+  +---------------------------------------------------+
+"""
+    print(banner)
+
+
+def _log_config():
+    """Log configuration details."""
+    provider = os.getenv("LLM_PROVIDER", "gemini")
+    model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    fallback_model = os.getenv("GEMINI_FALLBACK_MODEL", "gemini-2.0-flash")
+    has_gemini = bool(os.getenv("GEMINI_API_KEY"))
+    has_groq = bool(os.getenv("GROQ_API_KEY"))
+    timeout = os.getenv("LLM_TIMEOUT", "120")
+
+    print(f"  [CONFIG] LLM Provider:     {provider}")
+    print(f"  [CONFIG] Primary Model:    {model}")
+    print(f"  [CONFIG] Fallback Model:   {fallback_model}")
+    print(f"  [CONFIG] Gemini API Key:   {'***' + os.getenv('GEMINI_API_KEY', '')[-4:] if has_gemini else 'NOT SET'}")
+    print(f"  [CONFIG] Groq API Key:     {'***' + os.getenv('GROQ_API_KEY', '')[-4:] if has_groq else 'NOT SET'}")
+    print(f"  [CONFIG] Timeout:          {timeout}s")
+    print()
+
 
 # ---------------------------------------------------------------------------
 # App setup
 # ---------------------------------------------------------------------------
 
 app = FastAPI(
-    title="Conseal PII Pseudonymizer",
+    title="Glass Box PII Pseudonymizer",
     description=(
         "Context-aware PII pseudonymization API. "
         "Replaces personally identifiable information with structured, "
@@ -75,16 +123,57 @@ DEMO_DIR = Path(__file__).parent.parent / "data" / "demo_documents"
 
 @app.on_event("startup")
 async def startup():
-    """Load cached responses on startup."""
-    loaded = load_cached_responses()
-    logger.info(f"Server started. {loaded} cached responses loaded.")
+    """Load cached responses and display startup info."""
+    _log_banner()
+    _log_config()
 
-    # Verify required API keys
+    loaded = load_cached_responses()
+    print(f"  [CACHE]  Loaded {loaded} cached responses from disk")
+
+    # Count demo documents
+    demo_count = len(list(DEMO_DIR.glob("*.txt"))) if DEMO_DIR.exists() else 0
+    print(f"  [DEMO]   {demo_count} demo documents available")
+
+    # Verify API keys
     provider = os.getenv("LLM_PROVIDER", "gemini")
     if provider == "gemini" and not os.getenv("GEMINI_API_KEY"):
-        logger.warning("GEMINI_API_KEY not set — live pseudonymization will fail")
-    if provider == "groq" and not os.getenv("GROQ_API_KEY"):
-        logger.warning("GROQ_API_KEY not set — live pseudonymization will fail")
+        print(f"  [WARN]   GEMINI_API_KEY not set -- live pseudonymization will fail!")
+    if not os.getenv("GROQ_API_KEY"):
+        print(f"  [INFO]   GROQ_API_KEY not set -- Groq fallback unavailable")
+
+    print()
+    print(f"  [READY]  Glass Box API is running")
+    print(f"  [READY]  Docs:  http://localhost:8000/docs")
+    print(f"  [READY]  Health: http://localhost:8000/health")
+    print()
+    print("  " + "=" * 50)
+    print()
+
+
+# ---------------------------------------------------------------------------
+# Request logging middleware
+# ---------------------------------------------------------------------------
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    """Log every request with timing."""
+    start_time = time.time()
+    response = await call_next(request)
+    duration = time.time() - start_time
+
+    # Skip logging for health checks to avoid noise
+    if request.url.path == "/health":
+        return response
+
+    status = response.status_code
+    method = request.method
+    path = request.url.path
+    duration_ms = int(duration * 1000)
+
+    marker = "OK" if status < 400 else "ERR"
+    print(f"  [{marker}]    {method} {path} -> {status} ({duration_ms}ms)")
+
+    return response
 
 
 # ---------------------------------------------------------------------------
@@ -115,18 +204,34 @@ async def pseudonymize(request: PseudonymizeRequest):
             detail={"error": "invalid_input", "message": "Document text cannot be empty"},
         )
 
+    doc_length = len(text)
+    print(f"  [AGENT]  Processing document ({doc_length} chars)...")
+
     # Check cache first
     cached = get_cached_response(text)
     if cached:
-        logger.info("Returning cached response")
+        print(f"  [CACHE]  Cache hit! Returning cached response")
+        print(f"  [CACHE]  {cached.entity_count} entities, trust: {cached.trust_score}/10")
         return cached
 
     # Live processing
+    start_time = time.time()
     try:
+        print(f"  [AGENT]  Calling Gemini API...")
         response = await pseudonymize_document(text)
+        duration = time.time() - start_time
+
+        # Rich output
+        print(f"  [AGENT]  Done in {duration:.1f}s")
+        print(f"  [AGENT]  Entities detected: {response.entity_count}")
+        print(f"  [AGENT]  Trust score: {response.trust_score}/10")
+        for cat in response.category_breakdown:
+            print(f"  [AGENT]    - {cat.count}x {cat.category}")
+
     except PseudonymizationError as e:
         error_msg = str(e)
-        logger.error(f"Pseudonymization failed: {error_msg}")
+        duration = time.time() - start_time
+        print(f"  [ERROR]  Pseudonymization failed after {duration:.1f}s: {error_msg}")
 
         if "rate limit" in error_msg.lower() or "quota" in error_msg.lower():
             raise HTTPException(
@@ -176,7 +281,7 @@ async def pseudonymize(request: PseudonymizeRequest):
             },
         )
     except Exception as e:
-        logger.exception(f"Unexpected error during pseudonymization: {e}")
+        print(f"  [ERROR]  Unexpected error: {e}")
         raise HTTPException(
             status_code=500,
             detail={
@@ -187,6 +292,7 @@ async def pseudonymize(request: PseudonymizeRequest):
 
     # Cache the successful response
     cache_response(text, response)
+    print(f"  [CACHE]  Response cached")
 
     return response
 

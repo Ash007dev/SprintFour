@@ -1,0 +1,38 @@
+{
+  "pseudonymized_text": "My name is [FULL_NAME_1] and my email is [EMAIL_1]",
+  "entities": [
+    {
+      "original_text": "John Doe",
+      "pseudonym": "[FULL_NAME_1]",
+      "entity_type": "FULL_NAME",
+      "confidence": 0.95,
+      "start": 11,
+      "end": 19,
+      "pseudonym_start": 11,
+      "pseudonym_end": 24
+    },
+    {
+      "original_text": "john@example.com",
+      "pseudonym": "[EMAIL_1]",
+      "entity_type": "EMAIL",
+      "confidence": 0.95,
+      "start": 36,
+      "end": 52,
+      "pseudonym_start": 41,
+      "pseudonym_end": 50
+    }
+  ],
+  "trust_score": 9.5,
+  "category_breakdown": [
+    {
+      "category": "Email Addresses",
+      "count": 1
+    },
+    {
+      "category": "Names",
+      "count": 1
+    }
+  ],
+  "summary": "This document was scanned and 2 pieces of personal information were identified: 1 email addresse and 1 name. Each item has been replaced with a descriptive label that shows what type of information was there without revealing the actual sensitive data. The system is highly confident in all of the labels applied. You can trust that the detected items have been correctly identified and categorized.",
+  "entity_count": 2
+}

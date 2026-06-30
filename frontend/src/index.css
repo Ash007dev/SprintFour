@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #f9f9f9;
+  --color-surface: #ffffff;
+  --color-surface-high: #e8e8e8;
+  --color-surface-low: #f3f3f3;
+  --color-primary: #000000;
+  --color-on-primary: #ffffff;
+  --color-on-background: #1b1b1b;
+  --color-secondary: #5d5f5f;
+  --color-on-surface-variant: #4c4546;
+
+  --font-headline: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* Base */
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+/* Neo-brutalist shadows */
+.neo-shadow {
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+
+.neo-shadow-lg {
+  box-shadow: 8px 8px 0px 0px #000000;
+}
+
+.neo-shadow-sm {
+  box-shadow: 2px 2px 0px 0px #000000;
+}
+
+/* Button interactions */
+.neo-btn {
+  transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+  box-shadow: 4px 4px 0px 0px #000000;
+}
+
+.neo-btn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px #000000;
+}
+
+.neo-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px 0px #000000;
+}
+
+/* Pseudo tag */
+.pseudo-tag {
+  transition: all 0.1s ease-in-out;
+  cursor: pointer;
+}
+
+.pseudo-tag:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px 0px #000000;
+  background-color: #000;
+  color: #fff;
+}
+
+/* Textarea focus */
+textarea:focus {
+  outline: none;
+  box-shadow: 8px 8px 0px 0px #000000;
+}
+
+/* Loading spinner */
+@keyframes neo-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.neo-loading {
+  animation: neo-pulse 1.5s ease-in-out infinite;
+}
+
+/* Processing bar */
+@keyframes neo-progress {
+  0% { width: 0%; }
+  50% { width: 70%; }
+  100% { width: 100%; }
+}
+
+.neo-progress-bar {
+  animation: neo-progress 3s ease-in-out;
+}
+
+/* Popover */
+.popover-enter {
+  animation: popover-in 0.15s ease-out;
+}
+
+@keyframes popover-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
