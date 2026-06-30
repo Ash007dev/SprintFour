@@ -7,7 +7,7 @@ export default function SummaryScreen({ result, verification, onReset, onBackToO
       ? 'All items were identified and independently verified with high confidence.'
       : trustScore >= 6.5
       ? 'Most items were identified with high confidence. Some findings require attention.'
-      : 'The verifier flagged potential issues. Please review the audit trail.'
+      : 'The verifier flagged potential issues. Please review the findings below.'
     : trustScore >= 8.5
       ? 'All items were identified with high confidence. Run verification for an independent audit.'
       : trustScore >= 6.5
@@ -23,7 +23,9 @@ export default function SummaryScreen({ result, verification, onReset, onBackToO
             Trust Summary
           </h1>
           <p className="font-[var(--font-body)] text-lg text-on-surface-variant max-w-2xl mx-auto">
-            The document has been processed{isVerified ? ' and independently verified' : ''}. Here is a breakdown of the confidence levels and identified entities.
+            {isVerified
+              ? 'Your document has been processed and independently audited by a second AI agent. Here is the complete breakdown.'
+              : 'Your document has been processed. Here is a breakdown of what was found. Run verification for an independent audit.'}
           </p>
         </header>
 
@@ -53,7 +55,7 @@ export default function SummaryScreen({ result, verification, onReset, onBackToO
             {result.category_breakdown.map((cat, i) => (
               <div
                 key={i}
-                className="p-4 bg-surface border-2 border-primary flex flex-col justify-between neo-shadow-sm"
+                className="p-4 bg-surface border-2 border-primary flex flex-col justify-between neo-shadow-sm hover:bg-surface-high transition-colors"
               >
                 <span className="font-[var(--font-headline)] text-4xl font-bold text-primary block mb-2">
                   {cat.count}
@@ -66,36 +68,102 @@ export default function SummaryScreen({ result, verification, onReset, onBackToO
           </div>
         </div>
 
-        {/* Verification findings summary */}
-        {isVerified && verification.findings && (
-          <div className="border-4 border-primary bg-surface p-6 neo-shadow">
-            <h2 className="font-[var(--font-headline)] text-xl font-bold uppercase mb-4 border-b-2 border-primary pb-2">
-              Verification Findings
-            </h2>
-            <p className="font-[var(--font-body)] text-base mb-4">
-              {verification.overall_assessment}
-            </p>
-            <div className="flex flex-wrap gap-3">
-              {(() => {
-                const counts = { CLEAN: 0, RISK: 0, MISS: 0 };
-                verification.findings.forEach(f => { counts[f.type] = (counts[f.type] || 0) + 1; });
-                return Object.entries(counts).filter(([, v]) => v > 0).map(([type, count]) => (
-                  <span key={type} className={`font-[var(--font-mono)] text-xs px-3 py-1 border-2 border-primary uppercase font-bold ${
-                    type === 'CLEAN' ? 'bg-surface' : 'bg-primary text-on-primary'
-                  }`}>
-                    {count}x {type}
-                  </span>
-                ));
-              })()}
+        {/* Detailed Verification Findings */}
+        {isVerified && verification.findings && verification.findings.length > 0 && (
+          <div className="border-4 border-primary bg-surface neo-shadow-lg">
+            {/* Header */}
+            <div className="bg-primary text-on-primary px-6 py-3 flex items-center justify-between">
+              <h2 className="font-[var(--font-headline)] text-xl font-bold uppercase tracking-tight">
+                Verification Findings
+              </h2>
+              <span className="font-[var(--font-mono)] text-xs uppercase">
+                {verification.findings.length} finding{verification.findings.length !== 1 ? 's' : ''}
+              </span>
+            </div>
+
+            {/* Overall assessment */}
+            <div className="px-6 py-4 border-b-2 border-primary bg-surface-high">
+              <p className="font-[var(--font-body)] text-base font-medium">
+                {verification.overall_assessment}
+              </p>
+            </div>
+
+            {/* Individual findings */}
+            <div className="divide-y-2 divide-primary">
+              {verification.findings.map((finding, i) => (
+                <div
+                  key={i}
+                  className={`px-6 py-4 flex gap-4 items-start hover:bg-surface-high transition-colors ${
+                    finding.type === 'MISS' || finding.type === 'RISK' ? 'border-l-4 border-l-primary' : ''
+                  }`}
+                >
+                  {/* Type badge */}
+                  <div className="shrink-0 mt-0.5">
+                    <span className={`font-[var(--font-mono)] text-xs px-3 py-1 uppercase font-bold tracking-wider border-2 border-primary ${
+                      finding.type === 'CLEAN'
+                        ? 'bg-surface text-primary'
+                        : 'bg-primary text-on-primary'
+                    }`}>
+                      {finding.type}
+                    </span>
+                  </div>
+
+                  {/* Description */}
+                  <div className="flex-grow">
+                    <p className="font-[var(--font-body)] text-sm leading-relaxed">
+                      {finding.description}
+                    </p>
+                    {finding.affected_text && (
+                      <p className="font-[var(--font-mono)] text-xs text-secondary mt-2 bg-surface-high px-2 py-1 border border-primary inline-block">
+                        &quot;{finding.affected_text}&quot;
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Severity */}
+                  {finding.severity && finding.type !== 'CLEAN' && (
+                    <span className={`shrink-0 font-[var(--font-mono)] text-xs px-2 py-0.5 uppercase font-bold border border-primary ${
+                      finding.severity === 'high' ? 'bg-primary text-on-primary' : 'bg-surface'
+                    }`}>
+                      {finding.severity}
+                    </span>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         )}
 
-        {/* Summary paragraph */}
-        <div className="border-t-4 border-primary pt-8 pb-6">
-          <p className="font-[var(--font-body)] text-lg text-on-background max-w-3xl mx-auto border-l-4 border-primary pl-6 leading-relaxed">
+        {/* What was found and why */}
+        <div className="border-4 border-primary bg-surface neo-shadow p-6">
+          <h2 className="font-[var(--font-headline)] text-xl font-bold uppercase mb-4 border-b-2 border-primary pb-3">
+            What we did and why
+          </h2>
+          <p className="font-[var(--font-body)] text-base text-on-background leading-relaxed mb-4">
             {result.summary}
           </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4">
+            <div className="border-2 border-primary p-3 bg-surface-high">
+              <div className="font-[var(--font-mono)] text-xs font-bold uppercase mb-1">Step 1: Detect</div>
+              <div className="font-[var(--font-body)] text-sm text-secondary">
+                Presidio scanned for patterns (emails, phone numbers, SSNs). Gemini then analyzed context to confirm or reject each detection.
+              </div>
+            </div>
+            <div className="border-2 border-primary p-3 bg-surface-high">
+              <div className="font-[var(--font-mono)] text-xs font-bold uppercase mb-1">Step 2: Label</div>
+              <div className="font-[var(--font-body)] text-sm text-secondary">
+                Each confirmed PII item was replaced with a descriptive label like [FULL_NAME_1] so you can see exactly what was replaced and why.
+              </div>
+            </div>
+            <div className="border-2 border-primary p-3 bg-surface-high">
+              <div className="font-[var(--font-mono)] text-xs font-bold uppercase mb-1">Step 3: Verify</div>
+              <div className="font-[var(--font-body)] text-sm text-secondary">
+                {isVerified
+                  ? 'A second AI agent re-read the output looking for anything that was missed or could still identify someone.'
+                  : 'Run verification to have a second AI agent independently audit the pseudonymized output.'}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Actions */}

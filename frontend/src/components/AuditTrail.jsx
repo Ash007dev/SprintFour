@@ -1,54 +1,50 @@
 export default function AuditTrail({ entries }) {
   if (!entries || entries.length === 0) return null;
 
-  const getIcon = (type) => {
+  const getLabel = (type) => {
     switch (type) {
       case 'CLEAN':
         return (
-          <span className="w-6 h-6 flex items-center justify-center bg-surface border-2 border-primary text-xs font-bold font-[var(--font-mono)]">
-            +
+          <span className="font-[var(--font-mono)] text-xs px-2 py-0.5 bg-surface border-2 border-primary uppercase font-bold tracking-wider">
+            Clean
           </span>
         );
       case 'RISK':
         return (
-          <span className="w-6 h-6 flex items-center justify-center bg-primary text-on-primary text-xs font-bold font-[var(--font-mono)]">
-            !
+          <span className="font-[var(--font-mono)] text-xs px-2 py-0.5 bg-primary text-on-primary uppercase font-bold tracking-wider">
+            Risk
           </span>
         );
       case 'MISS':
         return (
-          <span className="w-6 h-6 flex items-center justify-center bg-primary text-on-primary text-xs font-bold font-[var(--font-mono)]">
-            X
+          <span className="font-[var(--font-mono)] text-xs px-2 py-0.5 bg-primary text-on-primary uppercase font-bold tracking-wider">
+            Miss
           </span>
         );
       case 'DETECT':
         return (
-          <span className="w-6 h-6 flex items-center justify-center bg-surface-high border-2 border-primary text-xs font-bold font-[var(--font-mono)]">
-            D
+          <span className="font-[var(--font-mono)] text-xs px-2 py-0.5 bg-surface-high border-2 border-primary uppercase font-bold tracking-wider">
+            Found
           </span>
         );
       case 'SCORE':
         return (
-          <span className="w-6 h-6 flex items-center justify-center bg-surface border-2 border-primary text-xs font-bold font-[var(--font-mono)]">
-            S
+          <span className="font-[var(--font-mono)] text-xs px-2 py-0.5 bg-surface border-2 border-primary uppercase font-bold tracking-wider">
+            Score
           </span>
         );
       default:
         return (
-          <span className="w-6 h-6 flex items-center justify-center bg-surface border-2 border-primary text-xs font-bold font-[var(--font-mono)]">
-            ?
+          <span className="font-[var(--font-mono)] text-xs px-2 py-0.5 bg-surface border-2 border-primary uppercase font-bold tracking-wider">
+            Info
           </span>
         );
     }
   };
 
-  const getSeverityStyle = (entry) => {
-    if (entry.type === 'MISS' || (entry.type === 'RISK' && entry.severity === 'high')) {
-      return 'border-l-4 border-l-primary bg-surface';
-    }
-    if (entry.type === 'RISK') {
-      return 'border-l-4 border-l-primary';
-    }
+  const getBorderStyle = (entry) => {
+    if (entry.type === 'MISS') return 'border-l-4 border-l-primary';
+    if (entry.type === 'RISK') return 'border-l-4 border-l-primary';
     return '';
   };
 
@@ -61,13 +57,15 @@ export default function AuditTrail({ entries }) {
         Audit Trail
       </div>
 
-      <div className="border-4 border-primary bg-surface max-h-80 overflow-y-auto">
+      <div className="border-4 border-primary bg-surface max-h-96 overflow-y-auto">
         {entries.map((entry, i) => (
           <div
             key={i}
-            className={`flex items-start gap-3 p-3 border-b-2 border-primary last:border-b-0 ${getSeverityStyle(entry)}`}
+            className={`flex items-start gap-3 p-3 border-b-2 border-primary last:border-b-0 transition-colors hover:bg-surface-high ${getBorderStyle(entry)}`}
           >
-            {getIcon(entry.type)}
+            <div className="shrink-0 mt-0.5">
+              {getLabel(entry.type)}
+            </div>
             <div className="flex-grow min-w-0">
               <p className="font-[var(--font-body)] text-sm leading-snug">
                 {entry.description}

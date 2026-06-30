@@ -1,0 +1,418 @@
+{
+  "pseudonymized_text": "[FULL_NAME_1]\n[CITY_1], [COUNTRY_1]\n(cid:131) [PHONE_1] # [EMAIL_1] (cid:239) [URL_1] § [URL_2] (cid:128)\n[URL_3]\nEducation\n[ORGANIZATION_NAME_1] 2023 – 2027\nB.Tech Computer Science & Engineering (CGPA: 8.55) [CITY_2], [COUNTRY_1]\n[ORGANIZATION_NAME_2] 2022 – 2023\nGrade 12, CBSE – PCM with Computer Science (92.4%) [CITY_1], [COUNTRY_1]\nExperience\n[ORGANIZATION_NAME_3] | Full Stack Engineer Intern 2025 – Present\nAgentic AI Platform [CITY_3], [STATE_1]\n• Designed and shipped the Autonomous Agents Page on the [ORGANIZATION_NAME_3] Portal using React.js; delivered production-grade UI for AI\nagent orchestration serving live users at scale.\n• Built 2 autonomous agents end-to-end from scratch, reducing manual workflow overhead and improving platform task automation\nfor real users.\n[ORGANIZATION_NAME_4] | Web Application Hacking Intern 2024\nOffensive Security [CITY_4], [STATE_2]\n• Performed vulnerability assessments on live production targets via [ORGANIZATION_NAME_5] bug bounty; identified and reported an Open\nRedirect (P4) – documented full recon-to-report workflow as a public write-up.\n• Completed OWASP Top 10 training; applied across XSS, SQLi, and directory brute-forcing tasks on [ORGANIZATION_NAME_9] machines.\nProjects\nEQUA – AI Bias Firewall | React 19, Express.js, Gemini 2.5, Firebase RTDB, GCP Cloud Run, Docker | GitHub\n• Built for [ORGANIZATION_NAME_6] Solution Challenge 2026 – a real-time proxy firewall intercepting demographic bias in AI outputs using\nCounterfactual Identity Simulation and Gemini 2.5 before decisions reach the user.\n• Architected a containerised Express.js backend on GCP Cloud Run with automated CI/CD via Cloud Build; integrated\nFirebase RTDB for audit logging and Gemini for compliance narrative generation.\nCareerForge – AI Talent Intelligence Platform | React, TypeScript, Express.js, FastAPI, MongoDB Atlas, Socket.IO | GitHub\n• Developed an end-to-end AI-powered platform featuring semantic resume scoring, ATS analysis, adaptive mock interviews, and\nAI-powered job matching – serving students and recruiters in production.\n• Architected a distributed system using React, Express.js, and FastAPI microservices with real-time notifications via\nSocket.IO, analytics dashboards, and automated reporting through MongoDB Atlas.\nVenueIQ – AI Crowd Intelligence Platform | React, Express.js, Socket.IO, Firebase RTDB, Gemini AI, Docker, GCP Cloud | GitHub\n• Built for PromptWars ([ORGANIZATION_NAME_6] × [ORGANIZATION_NAME_7]); developed a real-time stadium intelligence platform delivering live crowd analytics\nthrough Socket.IO WebSockets, Firebase RTDB, and Gemini-powered conversational assistance with section-aware routing.\n• Designed an event-driven backend with crowd forecasting, smart alert generation, offline-first PWA support, automated testing using\nJest, and CI/CD deployment on GCP Cloud Run.\nTechnical Skills\nLanguages: Python, Java, C++, JavaScript, SQL, Bash\nAI / GenAI: Gemini API, Groq API, Prompt Engineering (ChatGPT, Claude, Gemini), OpenCV, MediaPipe, PyTorch (basics),\nscikit-learn\nWeb & Backend: React.js, Next.js, Node.js, Express.js, FastAPI, REST APIs, Socket.IO, TypeScript\nCloud & DevOps: GCP (Cloud Run, Cloud Build, Firebase), Docker, CI/CD, AWS (basics)\nDatabases: MongoDB Atlas, PostgreSQL, Firebase RTDB\nAchievements\n• Ranked 98th out of 32,609 teams at PromptWars ([ORGANIZATION_NAME_6] × [ORGANIZATION_NAME_7]) – built and shipped a real-time AI platform end-to-end\nunder competition conditions.\n• Co-authoredDeepVerify,azero-trustAIverificationframeworkintegratinggazetracking,physiologicallivenessdetection(rPPG),\nand device fingerprinting for interview integrity; accepted at [ORGANIZATION_NAME_8] 2026.\n• Active on [ORGANIZATION_NAME_9] and [ORGANIZATION_NAME_10]; bug bounty hunter on [ORGANIZATION_NAME_5] – identified Open Redirect on live production\ntarget.\n• Scholar Badge Award (4th, 6th, 7th & 8th std) + Ignited Mind Award → Blue Blazer recipient; Class Representative – Amrita\nUniversity (1st year).\nCertifications & Profile Links\n• The Complete Cybersecurity Course – Vol. 1 ([ORGANIZATION_NAME_11]) – Encryption, Anonymity, Malware, Core Security Principles.\n• [ORGANIZATION_NAME_6] Cybersecurity Professional Certificate – Foundations of Cybersecurity (1/8) – Threat types, Risk Management,\nSecurity Roles.\nGitHub: [URL_2] Portfolio: [URL_3] Leetcode: [URL_4] [USERNAME_1] 18/",
+  "entities": [
+    {
+      "original_text": "Naren Moorthy S",
+      "pseudonym": "[FULL_NAME_1]",
+      "entity_type": "FULL_NAME",
+      "confidence": 0.95,
+      "start": 0,
+      "end": 15,
+      "pseudonym_start": 0,
+      "pseudonym_end": 13
+    },
+    {
+      "original_text": "Madurai",
+      "pseudonym": "[CITY_1]",
+      "entity_type": "CITY",
+      "confidence": 0.95,
+      "start": 16,
+      "end": 23,
+      "pseudonym_start": 14,
+      "pseudonym_end": 22
+    },
+    {
+      "original_text": "India",
+      "pseudonym": "[COUNTRY_1]",
+      "entity_type": "COUNTRY",
+      "confidence": 0.95,
+      "start": 25,
+      "end": 30,
+      "pseudonym_start": 24,
+      "pseudonym_end": 35
+    },
+    {
+      "original_text": "+91 9003980260",
+      "pseudonym": "[PHONE_1]",
+      "entity_type": "PHONE",
+      "confidence": 0.95,
+      "start": 41,
+      "end": 55,
+      "pseudonym_start": 46,
+      "pseudonym_end": 55
+    },
+    {
+      "original_text": "n4r4n15@gmail.com",
+      "pseudonym": "[EMAIL_1]",
+      "entity_type": "EMAIL",
+      "confidence": 0.95,
+      "start": 58,
+      "end": 75,
+      "pseudonym_start": 58,
+      "pseudonym_end": 67
+    },
+    {
+      "original_text": "linkedin.com/in/naren-moorthy-ab3a29266",
+      "pseudonym": "[URL_1]",
+      "entity_type": "URL",
+      "confidence": 0.95,
+      "start": 86,
+      "end": 125,
+      "pseudonym_start": 78,
+      "pseudonym_end": 85
+    },
+    {
+      "original_text": "github.com/Naren-bit",
+      "pseudonym": "[URL_2]",
+      "entity_type": "URL",
+      "confidence": 0.95,
+      "start": 128,
+      "end": 148,
+      "pseudonym_start": 88,
+      "pseudonym_end": 95
+    },
+    {
+      "original_text": "naren-bit.github.io",
+      "pseudonym": "[URL_3]",
+      "entity_type": "URL",
+      "confidence": 0.95,
+      "start": 159,
+      "end": 178,
+      "pseudonym_start": 106,
+      "pseudonym_end": 113
+    },
+    {
+      "original_text": "Amrita Vishwa Vidyapeetham University",
+      "pseudonym": "[ORGANIZATION_NAME_1]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 189,
+      "end": 226,
+      "pseudonym_start": 124,
+      "pseudonym_end": 145
+    },
+    {
+      "original_text": "Coimbatore",
+      "pseudonym": "[CITY_2]",
+      "entity_type": "CITY",
+      "confidence": 0.95,
+      "start": 290,
+      "end": 300,
+      "pseudonym_start": 209,
+      "pseudonym_end": 217
+    },
+    {
+      "original_text": "India",
+      "pseudonym": "[COUNTRY_1]",
+      "entity_type": "COUNTRY",
+      "confidence": 0.95,
+      "start": 302,
+      "end": 307,
+      "pseudonym_start": 219,
+      "pseudonym_end": 230
+    },
+    {
+      "original_text": "Velammal Bodhi Campus",
+      "pseudonym": "[ORGANIZATION_NAME_2]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 308,
+      "end": 329,
+      "pseudonym_start": 231,
+      "pseudonym_end": 252
+    },
+    {
+      "original_text": "Madurai",
+      "pseudonym": "[CITY_1]",
+      "entity_type": "CITY",
+      "confidence": 0.95,
+      "start": 393,
+      "end": 400,
+      "pseudonym_start": 316,
+      "pseudonym_end": 324
+    },
+    {
+      "original_text": "India",
+      "pseudonym": "[COUNTRY_1]",
+      "entity_type": "COUNTRY",
+      "confidence": 0.95,
+      "start": 402,
+      "end": 407,
+      "pseudonym_start": 326,
+      "pseudonym_end": 337
+    },
+    {
+      "original_text": "Ubayog",
+      "pseudonym": "[ORGANIZATION_NAME_3]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 419,
+      "end": 425,
+      "pseudonym_start": 349,
+      "pseudonym_end": 370
+    },
+    {
+      "original_text": "Bangalore",
+      "pseudonym": "[CITY_3]",
+      "entity_type": "CITY",
+      "confidence": 0.95,
+      "start": 490,
+      "end": 499,
+      "pseudonym_start": 435,
+      "pseudonym_end": 443
+    },
+    {
+      "original_text": "Karnataka",
+      "pseudonym": "[STATE_1]",
+      "entity_type": "STATE",
+      "confidence": 0.95,
+      "start": 501,
+      "end": 510,
+      "pseudonym_start": 445,
+      "pseudonym_end": 454
+    },
+    {
+      "original_text": "Ubayog",
+      "pseudonym": "[ORGANIZATION_NAME_3]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 568,
+      "end": 574,
+      "pseudonym_start": 512,
+      "pseudonym_end": 533
+    },
+    {
+      "original_text": "NullClass",
+      "pseudonym": "[ORGANIZATION_NAME_4]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 826,
+      "end": 835,
+      "pseudonym_start": 785,
+      "pseudonym_end": 806
+    },
+    {
+      "original_text": "Krishnagiri",
+      "pseudonym": "[CITY_4]",
+      "entity_type": "CITY",
+      "confidence": 0.95,
+      "start": 893,
+      "end": 904,
+      "pseudonym_start": 864,
+      "pseudonym_end": 872
+    },
+    {
+      "original_text": "Tamil Nadu",
+      "pseudonym": "[STATE_2]",
+      "entity_type": "STATE",
+      "confidence": 0.95,
+      "start": 906,
+      "end": 916,
+      "pseudonym_start": 874,
+      "pseudonym_end": 883
+    },
+    {
+      "original_text": "YesWeHack",
+      "pseudonym": "[ORGANIZATION_NAME_5]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 986,
+      "end": 995,
+      "pseudonym_start": 953,
+      "pseudonym_end": 974
+    },
+    {
+      "original_text": "HackTheBox",
+      "pseudonym": "[ORGANIZATION_NAME_9]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 1217,
+      "end": 1227,
+      "pseudonym_start": 1196,
+      "pseudonym_end": 1217
+    },
+    {
+      "original_text": "Google",
+      "pseudonym": "[ORGANIZATION_NAME_6]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 1365,
+      "end": 1371,
+      "pseudonym_start": 1355,
+      "pseudonym_end": 1376
+    },
+    {
+      "original_text": "Google",
+      "pseudonym": "[ORGANIZATION_NAME_6]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 2422,
+      "end": 2428,
+      "pseudonym_start": 2427,
+      "pseudonym_end": 2448
+    },
+    {
+      "original_text": "hack2skill",
+      "pseudonym": "[ORGANIZATION_NAME_7]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 2431,
+      "end": 2441,
+      "pseudonym_start": 2451,
+      "pseudonym_end": 2472
+    },
+    {
+      "original_text": "Google",
+      "pseudonym": "[ORGANIZATION_NAME_6]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 3319,
+      "end": 3325,
+      "pseudonym_start": 3350,
+      "pseudonym_end": 3371
+    },
+    {
+      "original_text": "hack2skill",
+      "pseudonym": "[ORGANIZATION_NAME_7]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 3328,
+      "end": 3338,
+      "pseudonym_start": 3374,
+      "pseudonym_end": 3395
+    },
+    {
+      "original_text": "IEEE ICOSAAS",
+      "pseudonym": "[ORGANIZATION_NAME_8]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 3608,
+      "end": 3620,
+      "pseudonym_start": 3665,
+      "pseudonym_end": 3686
+    },
+    {
+      "original_text": "HackTheBox",
+      "pseudonym": "[ORGANIZATION_NAME_9]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 3639,
+      "end": 3649,
+      "pseudonym_start": 3705,
+      "pseudonym_end": 3726
+    },
+    {
+      "original_text": "TryHackMe",
+      "pseudonym": "[ORGANIZATION_NAME_10]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 3654,
+      "end": 3663,
+      "pseudonym_start": 3731,
+      "pseudonym_end": 3753
+    },
+    {
+      "original_text": "YesWeHack",
+      "pseudonym": "[ORGANIZATION_NAME_5]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 3686,
+      "end": 3695,
+      "pseudonym_start": 3776,
+      "pseudonym_end": 3797
+    },
+    {
+      "original_text": "StationX",
+      "pseudonym": "[ORGANIZATION_NAME_11]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 3974,
+      "end": 3982,
+      "pseudonym_start": 4076,
+      "pseudonym_end": 4098
+    },
+    {
+      "original_text": "Google",
+      "pseudonym": "[ORGANIZATION_NAME_6]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.9,
+      "start": 4046,
+      "end": 4052,
+      "pseudonym_start": 4162,
+      "pseudonym_end": 4183
+    },
+    {
+      "original_text": "github.com/Naren-bit",
+      "pseudonym": "[URL_2]",
+      "entity_type": "URL",
+      "confidence": 0.95,
+      "start": 4186,
+      "end": 4206,
+      "pseudonym_start": 4317,
+      "pseudonym_end": 4324
+    },
+    {
+      "original_text": "naren-bit.github.io",
+      "pseudonym": "[URL_3]",
+      "entity_type": "URL",
+      "confidence": 0.95,
+      "start": 4218,
+      "end": 4237,
+      "pseudonym_start": 4336,
+      "pseudonym_end": 4343
+    },
+    {
+      "original_text": "leetcode.com/u/",
+      "pseudonym": "[URL_4]",
+      "entity_type": "URL",
+      "confidence": 0.95,
+      "start": 4248,
+      "end": 4263,
+      "pseudonym_start": 4354,
+      "pseudonym_end": 4361
+    },
+    {
+      "original_text": "naren",
+      "pseudonym": "[USERNAME_1]",
+      "entity_type": "USERNAME",
+      "confidence": 0.95,
+      "start": 4264,
+      "end": 4269,
+      "pseudonym_start": 4362,
+      "pseudonym_end": 4374
+    }
+  ],
+  "trust_score": 9.6,
+  "category_breakdown": [
+    {
+      "category": "Organization Names",
+      "count": 18
+    },
+    {
+      "category": "Addresses",
+      "count": 10
+    },
+    {
+      "category": "Web URLs",
+      "count": 6
+    },
+    {
+      "category": "Email Addresses",
+      "count": 1
+    },
+    {
+      "category": "Names",
+      "count": 1
+    },
+    {
+      "category": "Phone Numbers",
+      "count": 1
+    },
+    {
+      "category": "Usernames",
+      "count": 1
+    }
+  ],
+  "summary": "This document was scanned and 38 pieces of personal information were identified: 18 organization names, 10 addresses, 6 web urls, 1 email addresse, 1 name, 1 phone number, and 1 username. Each item has been replaced with a descriptive label that shows what type of information was there without revealing the actual sensitive data. The system is highly confident in all of the labels applied. You can trust that the detected items have been correctly identified and categorized.",
+  "entity_count": 38
+}
