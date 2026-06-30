@@ -14,7 +14,8 @@ The project was built for a skeptical user who does not want to take privacy too
 
 Hosted site: https://glass-box-ecru.vercel.app  
 Backend API: https://glass-box-api.onrender.com  
-Health check: https://glass-box-api.onrender.com/health
+Health check: https://glass-box-api.onrender.com/health  
+Demo video: https://drive.google.com/file/d/1dnZj7U2NPvII701Ju34FL46D82XosZdZ/view?usp=sharing
 
 To run locally, start the FastAPI backend on port `8000`, then start the Vite frontend on port `5173`. Full instructions are below.
 
