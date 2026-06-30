@@ -1,11 +1,11 @@
-"""
-In-Memory Cache — Caches verified agent responses for demo documents.
+﻿"""
+In-Memory Cache  - Caches verified agent responses for demo documents.
 
 Keyed by a hash of the input text. Pre-populated with verified responses
 for the fixed demo documents so that a live judging session isn't fully
 dependent on a fresh API call succeeding in real time.
 
-The live/dynamic path still works correctly — this is purely a fallback
+The live/dynamic path still works correctly  - this is purely a fallback
 for reliability during demos.
 
 No persistent storage. No database. Cache lives only in process memory.
@@ -36,7 +36,7 @@ def get_cached_response(text: str) -> Optional[PseudonymizeResponse]:
     """
     Check if a cached response exists for the given text.
 
-    Returns None if no cache hit — caller should proceed with live API call.
+    Returns None if no cache hit  - caller should proceed with live API call.
     """
     text_hash = _hash_text(text)
     cached = _cache.get(text_hash)

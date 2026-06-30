@@ -1,26 +1,34 @@
 import { useState, useEffect } from 'react';
-import { pseudonymizeDocument, getDemoDocuments } from '../api';
+import { pseudonymizeDocument, pseudonymizeFile, getDemoDocuments } from '../api';
 
 export default function InputScreen({ onProcessed }) {
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [demoDocs, setDemoDocs] = useState([]);
+  const [uploadedFileName, setUploadedFileName] = useState(null);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   useEffect(() => {
     getDemoDocuments()
       .then(setDemoDocs)
-      .catch(() => {}); // Silently fail — demo docs are optional
+      .catch(() => {});
   }, []);
 
   const handleProcess = async () => {
-    if (!text.trim()) return;
+    if (!text.trim() && !uploadedFile) return;
     setLoading(true);
     setError(null);
 
     try {
-      const result = await pseudonymizeDocument(text.trim());
-      onProcessed(result, text.trim());
+      let result;
+      if (uploadedFile && !text.trim()) {
+        // Direct file upload (e.g. PDF that we can't show in textarea)
+        result = await pseudonymizeFile(uploadedFile);
+      } else {
+        result = await pseudonymizeDocument(text.trim());
+      }
+      onProcessed(result);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -28,18 +36,44 @@ export default function InputScreen({ onProcessed }) {
     }
   };
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => setText(event.target.result);
-    reader.readAsText(file);
+    setError(null);
+    setUploadedFileName(file.name);
+
+    const ext = file.name.split('.').pop().toLowerCase();
+
+    // For text-based formats, show content in textarea
+    if (['txt', 'md', 'csv', 'log', 'text', 'rst', 'tsv'].includes(ext)) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setText(event.target.result);
+        setUploadedFile(null);
+      };
+      reader.readAsText(file);
+    } else if (ext === 'json') {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setText(event.target.result);
+        setUploadedFile(null);
+      };
+      reader.readAsText(file);
+    } else {
+      // Binary formats (PDF, DOCX) - store file for direct upload
+      setText(`[File uploaded: ${file.name} - will be parsed on the server]`);
+      setUploadedFile(file);
+    }
   };
 
   const loadDemo = (doc) => {
     setText(doc.content);
+    setUploadedFile(null);
+    setUploadedFileName(null);
     setError(null);
   };
+
+  const canProcess = text.trim() || uploadedFile;
 
   return (
     <div className="flex flex-col items-center justify-center px-8 py-24 max-w-5xl mx-auto w-full">
@@ -47,10 +81,10 @@ export default function InputScreen({ onProcessed }) {
         {/* Hero */}
         <div className="flex flex-col gap-6">
           <h1 className="font-[var(--font-headline)] text-6xl md:text-7xl font-bold uppercase tracking-tighter text-primary">
-            GLASS BOX
+            CONSEAL
           </h1>
           <p className="font-[var(--font-body)] text-lg text-on-surface-variant max-w-2xl leading-relaxed">
-            Paste any document. We&apos;ll show you exactly what&apos;s sensitive &mdash; in plain language, not black bars.
+            Paste any document or upload a file. We will show you exactly what is sensitive - in plain language, not black bars.
           </p>
         </div>
 
@@ -68,7 +102,7 @@ export default function InputScreen({ onProcessed }) {
               className="w-full h-80 bg-surface border-4 border-primary p-6 font-[var(--font-body)] text-base focus:outline-none resize-none neo-shadow transition-shadow rounded-none"
               placeholder="Paste your document, contract, medical record, or financial statement here..."
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => { setText(e.target.value); setUploadedFile(null); setUploadedFileName(null); }}
               disabled={loading}
             />
           </div>
@@ -108,10 +142,12 @@ export default function InputScreen({ onProcessed }) {
               <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="square" strokeLinejoin="miter" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
-              <span className="uppercase underline underline-offset-4 decoration-2">Or upload a file</span>
+              <span className="uppercase underline underline-offset-4 decoration-2">
+                {uploadedFileName ? uploadedFileName : 'Upload a file (PDF, TXT, JSON, CSV...)'}
+              </span>
               <input
                 type="file"
-                accept=".txt,.md,.csv,.json,.log"
+                accept=".pdf,.txt,.md,.csv,.json,.log,.docx,.text,.rst,.tsv"
                 onChange={handleFileUpload}
                 className="hidden"
                 disabled={loading}
@@ -120,7 +156,7 @@ export default function InputScreen({ onProcessed }) {
 
             <button
               onClick={handleProcess}
-              disabled={!text.trim() || loading}
+              disabled={!canProcess || loading}
               className="neo-btn bg-primary text-on-primary border-2 border-primary px-8 py-4 font-[var(--font-mono)] text-xs uppercase tracking-widest w-full sm:w-auto disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer font-bold"
             >
               {loading ? 'Processing...' : 'Process Document'}
@@ -136,7 +172,7 @@ export default function InputScreen({ onProcessed }) {
               <div className="flex flex-col gap-1">
                 <span className="font-[var(--font-headline)] text-lg font-bold uppercase">Analyzing document</span>
                 <span className="font-[var(--font-body)] text-sm text-secondary">
-                  Scanning for personally identifiable information...
+                  Running Presidio base-pass, then contextual analysis via Gemini...
                 </span>
               </div>
             </div>
@@ -153,7 +189,7 @@ export default function InputScreen({ onProcessed }) {
               <path strokeLinecap="square" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
             <span className="font-[var(--font-mono)] text-xs uppercase tracking-wider">
-              Architectural Integrity Secured. Zero retention policy.
+              Zero retention policy. Your document is never stored.
             </span>
           </div>
         )}

@@ -1,11 +1,18 @@
-export default function SummaryScreen({ result, onReset, onBackToOutput }) {
-  const trustScore = result.trust_score;
-  const qualifier =
-    trustScore >= 8.5
-      ? 'All items were identified with high confidence.'
+export default function SummaryScreen({ result, verification, onReset, onBackToOutput }) {
+  const isVerified = !!verification;
+  const trustScore = isVerified ? verification.adjusted_trust_score : result.trust_score;
+
+  const qualifier = isVerified
+    ? trustScore >= 8.5
+      ? 'All items were identified and independently verified with high confidence.'
       : trustScore >= 6.5
-      ? 'Most items were identified with high confidence.'
-      : 'Some items were identified with lower certainty. Please review.';
+      ? 'Most items were identified with high confidence. Some findings require attention.'
+      : 'The verifier flagged potential issues. Please review the audit trail.'
+    : trustScore >= 8.5
+      ? 'All items were identified with high confidence. Run verification for an independent audit.'
+      : trustScore >= 6.5
+      ? 'Most items were identified with high confidence. Verification recommended.'
+      : 'Some items were identified with lower certainty. Verification strongly recommended.';
 
   return (
     <div className="flex flex-col items-center justify-center p-8 min-h-[80vh]">
@@ -16,7 +23,7 @@ export default function SummaryScreen({ result, onReset, onBackToOutput }) {
             Trust Summary
           </h1>
           <p className="font-[var(--font-body)] text-lg text-on-surface-variant max-w-2xl mx-auto">
-            The document has been successfully processed. Here is a breakdown of the confidence levels and identified entities.
+            The document has been processed{isVerified ? ' and independently verified' : ''}. Here is a breakdown of the confidence levels and identified entities.
           </p>
         </header>
 
@@ -25,7 +32,7 @@ export default function SummaryScreen({ result, onReset, onBackToOutput }) {
           {/* Trust Score Box */}
           <div className="md:col-span-5 flex flex-col justify-center items-center p-8 bg-surface border-4 border-primary neo-shadow-lg">
             <span className="font-[var(--font-mono)] text-xs text-secondary mb-2 uppercase tracking-widest">
-              Confidence Score
+              {isVerified ? 'Verified Score' : 'Unverified Score'}
             </span>
             <div className="font-[var(--font-headline)] text-primary flex items-baseline gap-2">
               <span className="text-7xl font-bold">{trustScore}</span>
@@ -34,6 +41,11 @@ export default function SummaryScreen({ result, onReset, onBackToOutput }) {
             <p className="mt-4 font-[var(--font-body)] text-sm text-center font-semibold bg-surface-high py-2 px-4 border-2 border-primary">
               {qualifier}
             </p>
+            {!isVerified && (
+              <p className="mt-3 font-[var(--font-mono)] text-xs text-secondary uppercase tracking-wider">
+                Score is preliminary until verified
+              </p>
+            )}
           </div>
 
           {/* Stats Grid */}
@@ -53,6 +65,31 @@ export default function SummaryScreen({ result, onReset, onBackToOutput }) {
             ))}
           </div>
         </div>
+
+        {/* Verification findings summary */}
+        {isVerified && verification.findings && (
+          <div className="border-4 border-primary bg-surface p-6 neo-shadow">
+            <h2 className="font-[var(--font-headline)] text-xl font-bold uppercase mb-4 border-b-2 border-primary pb-2">
+              Verification Findings
+            </h2>
+            <p className="font-[var(--font-body)] text-base mb-4">
+              {verification.overall_assessment}
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {(() => {
+                const counts = { CLEAN: 0, RISK: 0, MISS: 0 };
+                verification.findings.forEach(f => { counts[f.type] = (counts[f.type] || 0) + 1; });
+                return Object.entries(counts).filter(([, v]) => v > 0).map(([type, count]) => (
+                  <span key={type} className={`font-[var(--font-mono)] text-xs px-3 py-1 border-2 border-primary uppercase font-bold ${
+                    type === 'CLEAN' ? 'bg-surface' : 'bg-primary text-on-primary'
+                  }`}>
+                    {count}x {type}
+                  </span>
+                ));
+              })()}
+            </div>
+          </div>
+        )}
 
         {/* Summary paragraph */}
         <div className="border-t-4 border-primary pt-8 pb-6">

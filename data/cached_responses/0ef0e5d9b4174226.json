@@ -1,0 +1,480 @@
+{
+  "pseudonymized_text": "To: All Staff\nFrom: [FULL_NAME_1], VP of Operations\nDate: June 15, 2024\nSubject: Office Relocation and Updated Contact Information\n\nDear Team,\n\nI am writing to inform you that our company, [ORGANIZATION_NAME_1], will be relocating from our current office at [BUILDING_NUMBER_1] [STREET_1], [APARTMENT_NUMBER_1], [CITY_1], [STATE_1] [ZIP_CODE_1] to our new headquarters at [BUILDING_NUMBER_2] [STREET_2], [APARTMENT_NUMBER_2], [CITY_2], [STATE_2] [ZIP_CODE_2], effective August 1, 2024.\n\nPlease note the following important updates:\n\nEMPLOYEE CONTACTS:\n- [FULL_NAME_2] (CEO): [EMAIL_1], [PHONE_1]\n- [FULL_NAME_1] (VP Operations): [EMAIL_2], [PHONE_2]\n- [FULL_NAME_3] (IT Director): [EMAIL_3], [PHONE_3]\n\nUPDATED BANKING INFORMATION:\nOur new corporate banking details for vendor payments:\nBank: [ORGANIZATION_NAME_2]\nAccount Name: [ORGANIZATION_NAME_1]\nRouting Number: [ROUTING_NUMBER_1]\nAccount Number: [ACCOUNT_NUMBER_1]\n\nKEY DATES:\n- July 15, 2024: Packing day — all personal items must be boxed\n- August 1, 2024: First day at new location\n- August 5, 2024: Client reception at the new office\n\nCLIENT NOTIFI[STATE_2]TION:\nOur largest client, [ORGANIZATION_NAME_3], has been notified about the move. Please remind the team that the word \"apple\" in our lunch catering orders refers to the fruit, not the client — we've had confusion before. Similarly, our contact [FIRST_NAME_1] at [ORGANIZATION_NAME_3] should not be confused with the street address \"[STREET_3]\" at our current temporary storage facility at [BUILDING_NUMBER_3] [STREET_3], [CITY_3], [STATE_1] [ZIP_CODE_3].\n\nPARKING AND TRANSIT:\nFree parking is available at the Century Park garage. For questions about the LA transit system, contact [FULL_NAME_3] — that's our IT Director David, not the Century Park location.\n\nPlease send any questions to [EMAIL_4] or call our main line at [PHONE_4].\n\nBest regards,\n[FULL_NAME_1]\nEmployee ID: [EMPLOYEE_ID_1]\nSSN (for payroll verification only): [SSN_1]",
+  "entities": [
+    {
+      "original_text": "Patricia Williams",
+      "pseudonym": "[FULL_NAME_1]",
+      "entity_type": "FULL_NAME",
+      "confidence": 0.95,
+      "start": 20,
+      "end": 37,
+      "pseudonym_start": 20,
+      "pseudonym_end": 33
+    },
+    {
+      "original_text": "Johnson & Associates LLC",
+      "pseudonym": "[ORGANIZATION_NAME_1]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.95,
+      "start": 193,
+      "end": 217,
+      "pseudonym_start": 189,
+      "pseudonym_end": 210
+    },
+    {
+      "original_text": "250",
+      "pseudonym": "[BUILDING_NUMBER_1]",
+      "entity_type": "BUILDING_NUMBER",
+      "confidence": 0.95,
+      "start": 265,
+      "end": 268,
+      "pseudonym_start": 258,
+      "pseudonym_end": 277
+    },
+    {
+      "original_text": "Madison Avenue",
+      "pseudonym": "[STREET_1]",
+      "entity_type": "STREET",
+      "confidence": 0.95,
+      "start": 269,
+      "end": 283,
+      "pseudonym_start": 278,
+      "pseudonym_end": 288
+    },
+    {
+      "original_text": "Suite 400",
+      "pseudonym": "[APARTMENT_NUMBER_1]",
+      "entity_type": "APARTMENT_NUMBER",
+      "confidence": 0.95,
+      "start": 285,
+      "end": 294,
+      "pseudonym_start": 290,
+      "pseudonym_end": 310
+    },
+    {
+      "original_text": "New York",
+      "pseudonym": "[CITY_1]",
+      "entity_type": "CITY",
+      "confidence": 0.95,
+      "start": 296,
+      "end": 304,
+      "pseudonym_start": 312,
+      "pseudonym_end": 320
+    },
+    {
+      "original_text": "NY",
+      "pseudonym": "[STATE_1]",
+      "entity_type": "STATE",
+      "confidence": 0.95,
+      "start": 306,
+      "end": 308,
+      "pseudonym_start": 322,
+      "pseudonym_end": 331
+    },
+    {
+      "original_text": "10016",
+      "pseudonym": "[ZIP_CODE_1]",
+      "entity_type": "ZIP_CODE",
+      "confidence": 0.95,
+      "start": 309,
+      "end": 314,
+      "pseudonym_start": 332,
+      "pseudonym_end": 344
+    },
+    {
+      "original_text": "1800",
+      "pseudonym": "[BUILDING_NUMBER_2]",
+      "entity_type": "BUILDING_NUMBER",
+      "confidence": 0.95,
+      "start": 342,
+      "end": 346,
+      "pseudonym_start": 372,
+      "pseudonym_end": 391
+    },
+    {
+      "original_text": "Century Park East",
+      "pseudonym": "[STREET_2]",
+      "entity_type": "STREET",
+      "confidence": 0.95,
+      "start": 347,
+      "end": 364,
+      "pseudonym_start": 392,
+      "pseudonym_end": 402
+    },
+    {
+      "original_text": "Floor 12",
+      "pseudonym": "[APARTMENT_NUMBER_2]",
+      "entity_type": "APARTMENT_NUMBER",
+      "confidence": 0.95,
+      "start": 366,
+      "end": 374,
+      "pseudonym_start": 404,
+      "pseudonym_end": 424
+    },
+    {
+      "original_text": "Los Angeles",
+      "pseudonym": "[CITY_2]",
+      "entity_type": "CITY",
+      "confidence": 0.95,
+      "start": 376,
+      "end": 387,
+      "pseudonym_start": 426,
+      "pseudonym_end": 434
+    },
+    {
+      "original_text": "CA",
+      "pseudonym": "[STATE_2]",
+      "entity_type": "STATE",
+      "confidence": 0.95,
+      "start": 389,
+      "end": 391,
+      "pseudonym_start": 436,
+      "pseudonym_end": 445
+    },
+    {
+      "original_text": "90067",
+      "pseudonym": "[ZIP_CODE_2]",
+      "entity_type": "ZIP_CODE",
+      "confidence": 0.95,
+      "start": 392,
+      "end": 397,
+      "pseudonym_start": 446,
+      "pseudonym_end": 458
+    },
+    {
+      "original_text": "Marcus Johnson",
+      "pseudonym": "[FULL_NAME_2]",
+      "entity_type": "FULL_NAME",
+      "confidence": 0.95,
+      "start": 493,
+      "end": 507,
+      "pseudonym_start": 554,
+      "pseudonym_end": 567
+    },
+    {
+      "original_text": "marcus.johnson@johnsonassoc.com",
+      "pseudonym": "[EMAIL_1]",
+      "entity_type": "EMAIL",
+      "confidence": 0.95,
+      "start": 515,
+      "end": 546,
+      "pseudonym_start": 575,
+      "pseudonym_end": 584
+    },
+    {
+      "original_text": "(212) 555-0198",
+      "pseudonym": "[PHONE_1]",
+      "entity_type": "PHONE",
+      "confidence": 0.95,
+      "start": 548,
+      "end": 562,
+      "pseudonym_start": 586,
+      "pseudonym_end": 595
+    },
+    {
+      "original_text": "Patricia Williams",
+      "pseudonym": "[FULL_NAME_1]",
+      "entity_type": "FULL_NAME",
+      "confidence": 0.95,
+      "start": 565,
+      "end": 582,
+      "pseudonym_start": 598,
+      "pseudonym_end": 611
+    },
+    {
+      "original_text": "p.williams@johnsonassoc.com",
+      "pseudonym": "[EMAIL_2]",
+      "entity_type": "EMAIL",
+      "confidence": 0.95,
+      "start": 600,
+      "end": 627,
+      "pseudonym_start": 629,
+      "pseudonym_end": 638
+    },
+    {
+      "original_text": "(212) 555-0134",
+      "pseudonym": "[PHONE_2]",
+      "entity_type": "PHONE",
+      "confidence": 0.95,
+      "start": 629,
+      "end": 643,
+      "pseudonym_start": 640,
+      "pseudonym_end": 649
+    },
+    {
+      "original_text": "David Park",
+      "pseudonym": "[FULL_NAME_3]",
+      "entity_type": "FULL_NAME",
+      "confidence": 0.95,
+      "start": 646,
+      "end": 656,
+      "pseudonym_start": 652,
+      "pseudonym_end": 665
+    },
+    {
+      "original_text": "dpark@johnsonassoc.com",
+      "pseudonym": "[EMAIL_3]",
+      "entity_type": "EMAIL",
+      "confidence": 0.95,
+      "start": 672,
+      "end": 694,
+      "pseudonym_start": 681,
+      "pseudonym_end": 690
+    },
+    {
+      "original_text": "(212) 555-0167",
+      "pseudonym": "[PHONE_3]",
+      "entity_type": "PHONE",
+      "confidence": 0.95,
+      "start": 696,
+      "end": 710,
+      "pseudonym_start": 692,
+      "pseudonym_end": 701
+    },
+    {
+      "original_text": "Wells Fargo",
+      "pseudonym": "[ORGANIZATION_NAME_2]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.95,
+      "start": 802,
+      "end": 813,
+      "pseudonym_start": 793,
+      "pseudonym_end": 814
+    },
+    {
+      "original_text": "Johnson & Associates LLC",
+      "pseudonym": "[ORGANIZATION_NAME_1]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.95,
+      "start": 828,
+      "end": 852,
+      "pseudonym_start": 829,
+      "pseudonym_end": 850
+    },
+    {
+      "original_text": "121042882",
+      "pseudonym": "[ROUTING_NUMBER_1]",
+      "entity_type": "ROUTING_NUMBER",
+      "confidence": 0.95,
+      "start": 869,
+      "end": 878,
+      "pseudonym_start": 867,
+      "pseudonym_end": 885
+    },
+    {
+      "original_text": "4159-7823-0011",
+      "pseudonym": "[ACCOUNT_NUMBER_1]",
+      "entity_type": "ACCOUNT_NUMBER",
+      "confidence": 0.95,
+      "start": 895,
+      "end": 909,
+      "pseudonym_start": 902,
+      "pseudonym_end": 920
+    },
+    {
+      "original_text": "CA",
+      "pseudonym": "[STATE_2]",
+      "entity_type": "STATE",
+      "confidence": 0.95,
+      "start": 1097,
+      "end": 1099,
+      "pseudonym_start": 1108,
+      "pseudonym_end": 1117
+    },
+    {
+      "original_text": "Apple",
+      "pseudonym": "[ORGANIZATION_NAME_3]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.95,
+      "start": 1125,
+      "end": 1130,
+      "pseudonym_start": 1143,
+      "pseudonym_end": 1164
+    },
+    {
+      "original_text": "John",
+      "pseudonym": "[FIRST_NAME_1]",
+      "entity_type": "FIRST_NAME",
+      "confidence": 0.9,
+      "start": 1329,
+      "end": 1333,
+      "pseudonym_start": 1363,
+      "pseudonym_end": 1377
+    },
+    {
+      "original_text": "Apple",
+      "pseudonym": "[ORGANIZATION_NAME_3]",
+      "entity_type": "ORGANIZATION_NAME",
+      "confidence": 0.95,
+      "start": 1337,
+      "end": 1342,
+      "pseudonym_start": 1381,
+      "pseudonym_end": 1402
+    },
+    {
+      "original_text": "John Street",
+      "pseudonym": "[STREET_3]",
+      "entity_type": "STREET",
+      "confidence": 0.95,
+      "start": 1391,
+      "end": 1402,
+      "pseudonym_start": 1451,
+      "pseudonym_end": 1461
+    },
+    {
+      "original_text": "45",
+      "pseudonym": "[BUILDING_NUMBER_3]",
+      "entity_type": "BUILDING_NUMBER",
+      "confidence": 0.95,
+      "start": 1449,
+      "end": 1451,
+      "pseudonym_start": 1508,
+      "pseudonym_end": 1527
+    },
+    {
+      "original_text": "John Street",
+      "pseudonym": "[STREET_3]",
+      "entity_type": "STREET",
+      "confidence": 0.95,
+      "start": 1452,
+      "end": 1463,
+      "pseudonym_start": 1528,
+      "pseudonym_end": 1538
+    },
+    {
+      "original_text": "Brooklyn",
+      "pseudonym": "[CITY_3]",
+      "entity_type": "CITY",
+      "confidence": 0.95,
+      "start": 1465,
+      "end": 1473,
+      "pseudonym_start": 1540,
+      "pseudonym_end": 1548
+    },
+    {
+      "original_text": "NY",
+      "pseudonym": "[STATE_1]",
+      "entity_type": "STATE",
+      "confidence": 0.95,
+      "start": 1475,
+      "end": 1477,
+      "pseudonym_start": 1550,
+      "pseudonym_end": 1559
+    },
+    {
+      "original_text": "11201",
+      "pseudonym": "[ZIP_CODE_3]",
+      "entity_type": "ZIP_CODE",
+      "confidence": 0.95,
+      "start": 1478,
+      "end": 1483,
+      "pseudonym_start": 1560,
+      "pseudonym_end": 1572
+    },
+    {
+      "original_text": "David Park",
+      "pseudonym": "[FULL_NAME_3]",
+      "entity_type": "FULL_NAME",
+      "confidence": 0.95,
+      "start": 1612,
+      "end": 1622,
+      "pseudonym_start": 1701,
+      "pseudonym_end": 1714
+    },
+    {
+      "original_text": "hr@johnsonassoc.com",
+      "pseudonym": "[EMAIL_4]",
+      "entity_type": "EMAIL",
+      "confidence": 0.95,
+      "start": 1716,
+      "end": 1735,
+      "pseudonym_start": 1808,
+      "pseudonym_end": 1817
+    },
+    {
+      "original_text": "(212) 555-0100",
+      "pseudonym": "[PHONE_4]",
+      "entity_type": "PHONE",
+      "confidence": 0.95,
+      "start": 1761,
+      "end": 1775,
+      "pseudonym_start": 1843,
+      "pseudonym_end": 1852
+    },
+    {
+      "original_text": "Patricia Williams",
+      "pseudonym": "[FULL_NAME_1]",
+      "entity_type": "FULL_NAME",
+      "confidence": 0.95,
+      "start": 1792,
+      "end": 1809,
+      "pseudonym_start": 1869,
+      "pseudonym_end": 1882
+    },
+    {
+      "original_text": "EMP-2847",
+      "pseudonym": "[EMPLOYEE_ID_1]",
+      "entity_type": "EMPLOYEE_ID",
+      "confidence": 0.95,
+      "start": 1823,
+      "end": 1831,
+      "pseudonym_start": 1896,
+      "pseudonym_end": 1911
+    },
+    {
+      "original_text": "XXX-XX-4589",
+      "pseudonym": "[SSN_1]",
+      "entity_type": "SSN",
+      "confidence": 0.95,
+      "start": 1869,
+      "end": 1880,
+      "pseudonym_start": 1949,
+      "pseudonym_end": 1956
+    }
+  ],
+  "trust_score": 9.8,
+  "category_breakdown": [
+    {
+      "category": "Addresses",
+      "count": 17
+    },
+    {
+      "category": "Names",
+      "count": 7
+    },
+    {
+      "category": "Organization Names",
+      "count": 5
+    },
+    {
+      "category": "Email Addresses",
+      "count": 4
+    },
+    {
+      "category": "Phone Numbers",
+      "count": 4
+    },
+    {
+      "category": "Apartment Number",
+      "count": 2
+    },
+    {
+      "category": "Employee Id",
+      "count": 1
+    },
+    {
+      "category": "Financial Account Numbers",
+      "count": 1
+    },
+    {
+      "category": "Financial Routing Numbers",
+      "count": 1
+    },
+    {
+      "category": "Social Security Numbers",
+      "count": 1
+    }
+  ],
+  "summary": "This document was scanned and 43 pieces of personal information were identified: 17 addresses, 7 names, 5 organization names, 4 email addresses, 4 phone numbers, 2 apartment number, 1 employee id, 1 financial account number, 1 financial routing number, and 1 social security number. Each item has been replaced with a descriptive label that shows what type of information was there without revealing the actual sensitive data. The system is highly confident in all of the labels applied. You can trust that the detected items have been correctly identified and categorized.",
+  "entity_count": 43
+}

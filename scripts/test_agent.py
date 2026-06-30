@@ -1,5 +1,5 @@
-"""
-Agent Test Script — Tests the pseudonymization agent against all demo documents.
+﻿"""
+Agent Test Script  - Tests the pseudonymization agent against all demo documents.
 
 Run standalone: python scripts/test_agent.py
 Tests the full pipeline: prompt construction -> LLM call -> response parsing ->

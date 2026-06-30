@@ -7,21 +7,25 @@ import SummaryScreen from './screens/SummaryScreen';
 import ApiDocsScreen from './screens/ApiDocsScreen';
 
 function App() {
-  const [screen, setScreen] = useState('input'); // 'input' | 'output' | 'summary' | 'docs'
+  const [screen, setScreen] = useState('input');
   const [result, setResult] = useState(null);
-  const [inputText, setInputText] = useState('');
+  const [verification, setVerification] = useState(null);
 
-  const handleProcessed = (data, originalText) => {
+  const handleProcessed = (data) => {
     setResult(data);
-    setInputText(originalText);
+    setVerification(null);
     setScreen('output');
+  };
+
+  const handleVerified = (verifyData) => {
+    setVerification(verifyData);
   };
 
   const handleViewSummary = () => setScreen('summary');
   const handleBackToOutput = () => setScreen('output');
   const handleReset = () => {
     setResult(null);
-    setInputText('');
+    setVerification(null);
     setScreen('input');
   };
   const handleShowDocs = () => setScreen('docs');
@@ -37,6 +41,8 @@ function App() {
         {screen === 'output' && result && (
           <OutputScreen
             result={result}
+            verification={verification}
+            onVerified={handleVerified}
             onViewSummary={handleViewSummary}
             onReset={handleReset}
           />
@@ -44,6 +50,7 @@ function App() {
         {screen === 'summary' && result && (
           <SummaryScreen
             result={result}
+            verification={verification}
             onReset={handleReset}
             onBackToOutput={handleBackToOutput}
           />

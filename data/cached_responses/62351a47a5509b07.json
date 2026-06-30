@@ -1,0 +1,120 @@
+{
+  "pseudonymized_text": "My name is [FULL_NAME_1], I live at [STREET_1], [CITY_1] [STATE_1] [ZIP_CODE_1]. My SSN is [SSN_1] and email is [EMAIL_1]. My doctor [FULL_NAME_2] diagnosed me with [DIAGNOSIS_1].",
+  "entities": [
+    {
+      "original_text": "John Doe",
+      "pseudonym": "[FULL_NAME_1]",
+      "entity_type": "FULL_NAME",
+      "confidence": 0.95,
+      "start": 11,
+      "end": 19,
+      "pseudonym_start": 11,
+      "pseudonym_end": 24
+    },
+    {
+      "original_text": "123 Main Street",
+      "pseudonym": "[STREET_1]",
+      "entity_type": "STREET",
+      "confidence": 0.95,
+      "start": 31,
+      "end": 46,
+      "pseudonym_start": 36,
+      "pseudonym_end": 46
+    },
+    {
+      "original_text": "Springfield",
+      "pseudonym": "[CITY_1]",
+      "entity_type": "CITY",
+      "confidence": 0.95,
+      "start": 48,
+      "end": 59,
+      "pseudonym_start": 48,
+      "pseudonym_end": 56
+    },
+    {
+      "original_text": "IL",
+      "pseudonym": "[STATE_1]",
+      "entity_type": "STATE",
+      "confidence": 0.95,
+      "start": 60,
+      "end": 62,
+      "pseudonym_start": 57,
+      "pseudonym_end": 66
+    },
+    {
+      "original_text": "62704",
+      "pseudonym": "[ZIP_CODE_1]",
+      "entity_type": "ZIP_CODE",
+      "confidence": 0.95,
+      "start": 63,
+      "end": 68,
+      "pseudonym_start": 67,
+      "pseudonym_end": 79
+    },
+    {
+      "original_text": "123-45-6789",
+      "pseudonym": "[SSN_1]",
+      "entity_type": "SSN",
+      "confidence": 0.95,
+      "start": 80,
+      "end": 91,
+      "pseudonym_start": 91,
+      "pseudonym_end": 98
+    },
+    {
+      "original_text": "john.doe@gmail.com",
+      "pseudonym": "[EMAIL_1]",
+      "entity_type": "EMAIL",
+      "confidence": 0.95,
+      "start": 105,
+      "end": 123,
+      "pseudonym_start": 112,
+      "pseudonym_end": 121
+    },
+    {
+      "original_text": "Dr. Sarah Mitchell",
+      "pseudonym": "[FULL_NAME_2]",
+      "entity_type": "FULL_NAME",
+      "confidence": 0.95,
+      "start": 135,
+      "end": 153,
+      "pseudonym_start": 133,
+      "pseudonym_end": 146
+    },
+    {
+      "original_text": "Type 2 diabetes",
+      "pseudonym": "[DIAGNOSIS_1]",
+      "entity_type": "DIAGNOSIS",
+      "confidence": 0.95,
+      "start": 172,
+      "end": 187,
+      "pseudonym_start": 165,
+      "pseudonym_end": 178
+    }
+  ],
+  "trust_score": 9.8,
+  "category_breakdown": [
+    {
+      "category": "Addresses",
+      "count": 4
+    },
+    {
+      "category": "Names",
+      "count": 2
+    },
+    {
+      "category": "Email Addresses",
+      "count": 1
+    },
+    {
+      "category": "Medical Diagnoses",
+      "count": 1
+    },
+    {
+      "category": "Social Security Numbers",
+      "count": 1
+    }
+  ],
+  "summary": "This document was scanned and 9 pieces of personal information were identified: 4 addresses, 2 names, 1 email addresse, 1 medical diagnose, and 1 social security number. Each item has been replaced with a descriptive label that shows what type of information was there without revealing the actual sensitive data. The system is highly confident in all of the labels applied. You can trust that the detected items have been correctly identified and categorized.",
+  "entity_count": 9
+}

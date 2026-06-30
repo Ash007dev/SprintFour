@@ -1,5 +1,5 @@
-"""
-Pseudonymizer — Core orchestration for context-aware PII pseudonymization.
+﻿"""
+Pseudonymizer  - Core orchestration for context-aware PII pseudonymization.
 
 Handles:
 1. Sending document text to the LLM agent
@@ -8,7 +8,7 @@ Handles:
 4. Computing the Trust Score (asymmetric weighting, 0-10 scale)
 5. Generating the category breakdown and plain-language summary
 
-This is a single-agent, single-call architecture — one LLM call per document.
+This is a single-agent, single-call architecture  - one LLM call per document.
 No multi-agent orchestration, no chained calls.
 """
 
@@ -49,32 +49,36 @@ async def pseudonymize_document(text: str) -> PseudonymizeResponse:
     Raises:
         PseudonymizationError: If the LLM call or response parsing fails.
     """
-    # Step 1: Build prompts
-    system_prompt = build_system_prompt()
-    user_prompt = build_user_prompt(text)
+    # Step 1: Run Presidio base-pass (local, fast, pattern-based)
+    from backend.agent.presidio_detector import run_presidio
+    presidio_results = run_presidio(text)
 
-    # Step 2: Call the LLM agent (single call)
+    # Step 2: Build prompts (include Presidio results as grounding)
+    system_prompt = build_system_prompt()
+    user_prompt = build_user_prompt(text, presidio_detections=presidio_results)
+
+    # Step 3: Call the LLM agent (single call)
     try:
         raw_response = await call_llm(system_prompt, user_prompt)
     except LLMError as e:
         raise PseudonymizationError(f"LLM call failed: {e}")
 
-    # Step 3: Parse the structured response
+    # Step 4: Parse the structured response
     entities = _parse_agent_response(raw_response, text)
 
-    # Step 4: Validate and fix entity spans
+    # Step 5: Validate and fix entity spans
     entities = _validate_and_fix_entities(entities, text)
 
-    # Step 5: Perform string substitution
+    # Step 6: Perform string substitution
     pseudonymized_text, entity_infos = _apply_substitutions(text, entities)
 
-    # Step 6: Compute trust score
+    # Step 7: Compute trust score (baseline, before verification)
     trust_score = _compute_trust_score(entities)
 
-    # Step 7: Generate category breakdown
+    # Step 8: Generate category breakdown
     category_breakdown = _build_category_breakdown(entities)
 
-    # Step 8: Generate plain-language summary
+    # Step 9: Generate plain-language summary
     summary = _generate_summary(entities, category_breakdown, trust_score)
 
     return PseudonymizeResponse(
@@ -141,7 +145,7 @@ def _parse_agent_response(raw_response: str, original_text: str) -> list[Detecte
             )
             entities.append(entity)
         except (ValueError, TypeError) as e:
-            logger.warning(f"Skipping malformed entity: {ent_data} — {e}")
+            logger.warning(f"Skipping malformed entity: {ent_data}  - {e}")
             continue
 
     return entities
@@ -175,12 +179,12 @@ def _validate_and_fix_entities(
             validated.append(entity)
             continue
 
-        # Span doesn't match — try to find the text in the document
+        # Span doesn't match  - try to find the text in the document
         search_text = entity.original_text
         idx = text.find(search_text)
 
         if idx != -1:
-            # Found it — fix the span
+            # Found it  - fix the span
             entity.start = idx
             entity.end = idx + len(search_text)
             validated.append(entity)
@@ -194,7 +198,7 @@ def _validate_and_fix_entities(
             idx = lower_text.find(lower_search)
 
             if idx != -1:
-                # Found with case difference — use the actual text's casing
+                # Found with case difference  - use the actual text's casing
                 entity.original_text = text[idx:idx + len(search_text)]
                 entity.start = idx
                 entity.end = idx + len(search_text)
@@ -204,7 +208,7 @@ def _validate_and_fix_entities(
                 )
             else:
                 logger.warning(
-                    f"Could not find entity '{search_text}' in document — removing"
+                    f"Could not find entity '{search_text}' in document  - removing"
                 )
 
     # Find ALL occurrences of each detected entity text in the document.
@@ -241,7 +245,7 @@ def _validate_and_fix_entities(
         overlaps = False
         for existing in non_overlapping:
             if entity.start < existing.end and entity.end > existing.start:
-                # Overlap detected — keep the one with higher confidence
+                # Overlap detected  - keep the one with higher confidence
                 if entity.confidence > existing.confidence:
                     non_overlapping.remove(existing)
                     non_overlapping.append(entity)
@@ -332,7 +336,7 @@ def _compute_trust_score(entities: list[DetectedEntity]) -> float:
     one visible mistake outweighs many quiet successes.
     """
     if not entities:
-        # No entities found — could mean clean document or missed PII
+        # No entities found  - could mean clean document or missed PII
         # Return a moderate score rather than a perfect one
         return 7.0
 

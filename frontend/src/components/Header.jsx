@@ -5,8 +5,11 @@ export default function Header({ onLogoClick }) {
         onClick={onLogoClick}
         className="font-[var(--font-headline)] text-4xl font-black tracking-tighter text-primary hover:opacity-80 transition-opacity cursor-pointer"
       >
-        Glass Box
+        Conseal
       </button>
+      <span className="font-[var(--font-mono)] text-xs uppercase tracking-wider text-secondary hidden sm:block">
+        A Pseudonymization Approach to Trust
+      </span>
     </header>
   );
 }

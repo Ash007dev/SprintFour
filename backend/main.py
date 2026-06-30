@@ -1,13 +1,14 @@
 """
-FastAPI Backend — Single-endpoint API for PII pseudonymization.
+Conseal API - PII pseudonymization backend.
 
 Endpoints:
-- POST /pseudonymize: Process a document and return pseudonymized output
+- POST /pseudonymize: Process text and return pseudonymized output
+- POST /pseudonymize/upload: Process an uploaded file (PDF, JSON, TXT, etc.)
+- POST /verify: Run adversarial verification on pseudonymized output
 - GET /health: Health check
 - GET /demo-documents: List available demo documents
 
 Error handling: API failures return structured error responses, never crash.
-The app never hangs silently — clear, calm error states for every failure mode.
 """
 
 import logging
@@ -16,16 +17,21 @@ import time
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.agent.pseudonymizer import pseudonymize_document, PseudonymizationError
+from backend.agent.verifier import verify_document
 from backend.cache import cache_response, get_cached_response, load_cached_responses
+from backend.parsers import extract_text
 from backend.models import (
     ErrorResponse,
     HealthResponse,
     PseudonymizeRequest,
     PseudonymizeResponse,
+    VerifierFinding,
+    VerifyRequest,
+    VerifyResponse,
 )
 
 # Load environment variables
@@ -53,14 +59,14 @@ def _log_banner():
     banner = r"""
   +---------------------------------------------------+
   |                                                   |
-  |    ____  _                  ____                   |
-  |   / ___|| | __ _ ___ ___  | __ )  _____  __       |
-  |  | |  _ | |/ _` / __/ __| |  _ \ / _ \ \/ /       |
-  |  | |_| || | (_| \__ \__ \ | |_) | (_) >  <        |
-  |   \____||_|\__,_|___/___/ |____/ \___/_/\_\       |
+  |    ____                            _              |
+  |   / ___|___  _ __  ___  ___  __ _| |             |
+  |  | |   / _ \| '_ \/ __|/ _ \/ _` | |             |
+  |  | |__| (_) | | | \__ \  __/ (_| | |             |
+  |   \____\___/|_| |_|___/\___|\__,_|_|             |
   |                                                   |
   |   PII Pseudonymization API v1.0.0                 |
-  |   Architectural Integrity Secured.                |
+  |   A Pseudonymization Approach to Trust            |
   |                                                   |
   +---------------------------------------------------+
 """
@@ -90,7 +96,7 @@ def _log_config():
 # ---------------------------------------------------------------------------
 
 app = FastAPI(
-    title="Glass Box PII Pseudonymizer",
+    title="Conseal PII Pseudonymizer",
     description=(
         "Context-aware PII pseudonymization API. "
         "Replaces personally identifiable information with structured, "
@@ -99,7 +105,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS — allow the React frontend (dev server on port 5173 or 3000)
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -137,14 +143,14 @@ async def startup():
     # Verify API keys
     provider = os.getenv("LLM_PROVIDER", "gemini")
     if provider == "gemini" and not os.getenv("GEMINI_API_KEY"):
-        print(f"  [WARN]   GEMINI_API_KEY not set -- live pseudonymization will fail!")
+        print("  [WARN]   GEMINI_API_KEY not set - live pseudonymization will fail!")
     if not os.getenv("GROQ_API_KEY"):
-        print(f"  [INFO]   GROQ_API_KEY not set -- Groq fallback unavailable")
+        print("  [INFO]   GROQ_API_KEY not set - Groq verifier unavailable")
 
     print()
-    print(f"  [READY]  Glass Box API is running")
-    print(f"  [READY]  Docs:  http://localhost:8000/docs")
-    print(f"  [READY]  Health: http://localhost:8000/health")
+    print("  [READY]  Conseal API is running")
+    print("  [READY]  Docs:   http://localhost:8000/docs")
+    print("  [READY]  Health: http://localhost:8000/health")
     print()
     print("  " + "=" * 50)
     print()
@@ -204,6 +210,160 @@ async def pseudonymize(request: PseudonymizeRequest):
             detail={"error": "invalid_input", "message": "Document text cannot be empty"},
         )
 
+    return await _process_text(text)
+
+
+@app.post(
+    "/pseudonymize/upload",
+    response_model=PseudonymizeResponse,
+    responses={
+        400: {"model": ErrorResponse, "description": "Invalid input or unsupported format"},
+        500: {"model": ErrorResponse, "description": "Processing error"},
+        503: {"model": ErrorResponse, "description": "LLM service unavailable"},
+    },
+)
+async def pseudonymize_upload(file: UploadFile = File(...)):
+    """
+    Upload a file (PDF, JSON, TXT, MD, CSV, DOCX, etc.) for pseudonymization.
+
+    The file is parsed to extract plain text, then processed through the
+    same pseudonymization pipeline as the text endpoint.
+    """
+    if not file.filename:
+        raise HTTPException(
+            status_code=400,
+            detail={"error": "invalid_input", "message": "No file provided"},
+        )
+
+    # Read file content
+    try:
+        file_bytes = await file.read()
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail={"error": "read_error", "message": f"Could not read file: {e}"},
+        )
+
+    # Extract text
+    try:
+        print(f"  [PARSE]  Extracting text from: {file.filename}")
+        text = extract_text(file_bytes, file.filename)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail={"error": "parse_error", "message": str(e)},
+        )
+
+    if not text.strip():
+        raise HTTPException(
+            status_code=400,
+            detail={"error": "empty_document", "message": "No text could be extracted from the file"},
+        )
+
+    print(f"  [PARSE]  Extracted {len(text)} chars from {file.filename}")
+
+    return await _process_text(text.strip())
+
+
+@app.post(
+    "/verify",
+    response_model=VerifyResponse,
+    responses={
+        400: {"model": ErrorResponse, "description": "Invalid input"},
+        503: {"model": ErrorResponse, "description": "Verification service unavailable"},
+    },
+)
+async def verify(request: VerifyRequest):
+    """
+    Run adversarial verification on pseudonymized output.
+
+    Uses the Verifier Agent (Groq) to check for missed PII and
+    residual re-identification risk. Returns findings and an
+    adjusted trust score.
+    """
+    text = request.pseudonymized_text.strip()
+    if not text:
+        raise HTTPException(
+            status_code=400,
+            detail={"error": "invalid_input", "message": "Pseudonymized text cannot be empty"},
+        )
+
+    print(f"  [VERIFY] Starting verification ({len(text)} chars)...")
+
+    try:
+        result = await verify_document(text)
+    except Exception as e:
+        print(f"  [ERROR]  Verification failed: {e}")
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error": "verification_error",
+                "message": "Verification service is temporarily unavailable. Please try again.",
+            },
+        )
+
+    # Compute adjusted trust score
+    findings = [
+        VerifierFinding(
+            type=f.get("type", "CLEAN"),
+            description=f.get("description", ""),
+            affected_text=f.get("affected_text", ""),
+            severity=f.get("severity", "low"),
+        )
+        for f in result.get("findings", [])
+    ]
+
+    adjusted_score = _adjust_trust_score(
+        baseline=request.baseline_trust_score,
+        findings=findings,
+    )
+
+    # Log results
+    for f in findings:
+        icon = {"CLEAN": "+", "RISK": "!", "MISS": "X"}.get(f.type, "?")
+        print(f"  [VERIFY] [{icon}] {f.type}: {f.description}")
+    print(f"  [VERIFY] Score: {request.baseline_trust_score} -> {adjusted_score}")
+
+    return VerifyResponse(
+        findings=findings,
+        overall_assessment=result.get("overall_assessment", "Verification completed."),
+        adjusted_trust_score=adjusted_score,
+        is_verified=True,
+    )
+
+
+def _adjust_trust_score(baseline: float, findings: list[VerifierFinding]) -> float:
+    """
+    Adjust trust score based on verification findings.
+
+    Asymmetric weighting: one miss reduces trust far more than
+    several confirmations increase it.
+    """
+    adjustment = 0.0
+    for f in findings:
+        if f.type == "CLEAN":
+            adjustment += 0.1
+        elif f.type == "RISK":
+            if f.severity == "high":
+                adjustment -= 2.0
+            elif f.severity == "medium":
+                adjustment -= 1.5
+            else:
+                adjustment -= 0.5
+        elif f.type == "MISS":
+            if f.severity == "high":
+                adjustment -= 2.5
+            elif f.severity == "medium":
+                adjustment -= 1.5
+            else:
+                adjustment -= 1.0
+
+    adjusted = baseline + adjustment
+    return round(max(0.0, min(10.0, adjusted)), 1)
+
+
+async def _process_text(text: str) -> PseudonymizeResponse:
+    """Shared processing logic for both text and file upload endpoints."""
     doc_length = len(text)
     print(f"  [AGENT]  Processing document ({doc_length} chars)...")
 
@@ -217,7 +377,8 @@ async def pseudonymize(request: PseudonymizeRequest):
     # Live processing
     start_time = time.time()
     try:
-        print(f"  [AGENT]  Calling Gemini API...")
+        print("  [AGENT]  Running Presidio base-pass...")
+        print("  [AGENT]  Calling Gemini API...")
         response = await pseudonymize_document(text)
         duration = time.time() - start_time
 
@@ -292,7 +453,7 @@ async def pseudonymize(request: PseudonymizeRequest):
 
     # Cache the successful response
     cache_response(text, response)
-    print(f"  [CACHE]  Response cached")
+    print("  [CACHE]  Response cached")
 
     return response
 
@@ -310,9 +471,6 @@ async def health_check():
 async def list_demo_documents():
     """
     List available demo documents with their content.
-
-    Returns a list of demo documents that can be loaded into the frontend
-    for quick testing without needing to paste text manually.
     """
     if not DEMO_DIR.exists():
         return {"documents": []}
@@ -321,7 +479,6 @@ async def list_demo_documents():
     for doc_file in sorted(DEMO_DIR.glob("*.txt")):
         try:
             content = doc_file.read_text(encoding="utf-8")
-            # Create a human-readable name from the filename
             name = doc_file.stem.replace("_", " ").title()
             documents.append({
                 "id": doc_file.stem,

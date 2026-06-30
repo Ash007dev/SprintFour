@@ -1,11 +1,11 @@
-"""
-LLM Client — Unified interface for Gemini and Groq API calls.
+﻿"""
+LLM Client  - Unified interface for Gemini and Groq API calls.
 
 Provides a single function signature for both providers, switchable via
 the LLM_PROVIDER environment variable. Default: Gemini (primary).
 Groq is the fallback for rate-limit scenarios.
 
-No multi-agent orchestration — this is a direct, single API call wrapper.
+No multi-agent orchestration  - this is a direct, single API call wrapper.
 """
 
 import os
@@ -31,13 +31,13 @@ LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini").lower()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 
-# Gemini models — 2.5-flash primary, 2.0-flash fallback
+# Gemini models  - 2.5-flash primary, 2.0-flash fallback
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 GEMINI_FALLBACK_MODEL = os.getenv("GEMINI_FALLBACK_MODEL", "gemini-2.0-flash")
-# Groq model — using llama-3.3-70b-versatile for quality on free tier
+# Groq model  - using llama-3.3-70b-versatile for quality on free tier
 GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
-# Timeout for API calls (seconds) — 120s default to handle Gemini 2.5 Flash thinking time
+# Timeout for API calls (seconds)  - 120s default to handle Gemini 2.5 Flash thinking time
 LLM_TIMEOUT = int(os.getenv("LLM_TIMEOUT", "120"))
 
 
@@ -53,7 +53,7 @@ class RateLimitError(LLMError):
 
 
 # ---------------------------------------------------------------------------
-# Gemini client (using google.genai — the current, supported SDK)
+# Gemini client (using google.genai  - the current, supported SDK)
 # ---------------------------------------------------------------------------
 
 async def _call_gemini_model(client, model: str, system_prompt: str, user_prompt: str) -> str:
@@ -98,7 +98,7 @@ async def _call_gemini(system_prompt: str, user_prompt: str) -> str:
         if "429" in error_msg or "rate" in error_msg or "quota" in error_msg:
             raise RateLimitError(f"Gemini rate limit hit: {primary_err}")
 
-        # Primary model failed for non-auth, non-rate-limit reason — try fallback model
+        # Primary model failed for non-auth, non-rate-limit reason  - try fallback model
         if GEMINI_FALLBACK_MODEL and GEMINI_FALLBACK_MODEL != GEMINI_MODEL:
             logger.warning(
                 f"Gemini {GEMINI_MODEL} failed ({primary_err}), trying {GEMINI_FALLBACK_MODEL}"

@@ -1,4 +1,4 @@
-# Glass Box — API Documentation
+﻿# Glass Box  - API Documentation
 
 ## Base URL
 
@@ -143,10 +143,10 @@ Frontend (React)  →  POST /pseudonymize  →  FastAPI Backend  →  Gemini 2.5
      └──────────── JSON Response ────────────────┘
 ```
 
-- **Single agent, single API call** per document — no multi-agent orchestration
+- **Single agent, single API call** per document  - no multi-agent orchestration
 - **Gemini 2.5 Flash** primary, **Gemini 2.0 Flash** fallback, **Groq** last resort
 - **In-memory cache** with disk persistence for demo reliability
-- **Stateless** — no database, no user sessions, no data retention
+- **Stateless**  - no database, no user sessions, no data retention
 
 ---
 

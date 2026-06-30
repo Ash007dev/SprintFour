@@ -1,5 +1,5 @@
-"""
-Pydantic Models — Request/response schemas for the pseudonymization API.
+﻿"""
+Pydantic Models  - Request/response schemas for the pseudonymization API.
 
 Clean separation between the API layer and the internal agent/processing logic.
 """
@@ -78,3 +78,30 @@ class HealthResponse(BaseModel):
     """Response for GET /health."""
     status: str = "ok"
     llm_provider: str = Field(description="Currently configured LLM provider")
+
+
+# ---------------------------------------------------------------------------
+# Verification models (Agent 2 - Verifier)
+# ---------------------------------------------------------------------------
+
+class VerifierFinding(BaseModel):
+    """A single finding from the Verifier Agent."""
+    type: str = Field(description="CLEAN, RISK, or MISS")
+    description: str = Field(description="Plain-language description of the finding")
+    affected_text: str = Field(default="", description="Specific text that is problematic")
+    severity: str = Field(default="low", description="low, medium, or high")
+
+
+class VerifyRequest(BaseModel):
+    """Request body for POST /verify."""
+    pseudonymized_text: str = Field(description="The pseudonymized document text")
+    entity_count: int = Field(ge=0, description="Number of entities detected by Agent 1")
+    baseline_trust_score: float = Field(ge=0.0, le=10.0, description="Trust score before verification")
+
+
+class VerifyResponse(BaseModel):
+    """Response body for POST /verify."""
+    findings: list[VerifierFinding] = Field(description="List of verification findings")
+    overall_assessment: str = Field(description="One-sentence summary")
+    adjusted_trust_score: float = Field(ge=0.0, le=10.0, description="Trust score after verification")
+    is_verified: bool = Field(default=True, description="Whether verification completed")

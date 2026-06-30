@@ -1,5 +1,5 @@
-"""
-Pseudonymization Agent Prompt — System prompt and few-shot examples
+﻿"""
+Pseudonymization Agent Prompt  - System prompt and few-shot examples
 for the context-aware PII pseudonymization agent.
 
 This module constructs the system prompt sent to the LLM, including:
@@ -8,7 +8,7 @@ This module constructs the system prompt sent to the LLM, including:
 - Few-shot examples from the ai4privacy/pii-masking-43k dataset
 - Explicit instructions for contextual disambiguation
 
-The LLM returns ONLY structured span data — the backend performs the
+The LLM returns ONLY structured span data  - the backend performs the
 actual string substitution to produce pseudonymized output text.
 """
 
@@ -128,34 +128,34 @@ Given input text, detect all PII entities and return a JSON object with the foll
   ]
 }}
 
-## ENTITY TYPE TAXONOMY (open, extensible — use the most specific applicable type)
+## ENTITY TYPE TAXONOMY (open, extensible  - use the most specific applicable type)
 Common types include but are NOT limited to:
-- FIRST_NAME, LAST_NAME, FULL_NAME — personal names
-- EMAIL — email addresses
-- PHONE — phone numbers (any format)
-- ADDRESS — full street addresses
-- STREET — street names
-- CITY — city names
-- STATE — state/province names
-- ZIP_CODE — postal/zip codes
-- COUNTRY — country names
-- SSN — Social Security Numbers
-- DATE_OF_BIRTH — dates of birth
-- MEDICAL_RECORD_NUMBER — MRNs
-- DIAGNOSIS — medical diagnoses
-- MEDICATION — medication names with dosages
-- INSURANCE_ID — insurance policy numbers
-- ACCOUNT_NUMBER — bank/financial account numbers
-- ROUTING_NUMBER — bank routing numbers
-- CREDIT_CARD_NUMBER — credit card numbers
-- URL — web addresses
-- IP_ADDRESS — IPv4/IPv6 addresses
-- USERNAME — online usernames
-- PASSWORD — passwords
-- ORGANIZATION_NAME — company/organization names (only when identifying a specific, named entity — not generic industry terms)
-- NPI — National Provider Identifier numbers
-- BUILDING_NUMBER — building/house numbers
-- FINANCIAL_ID — FINRA CRD numbers, fund identifiers, etc.
+- FIRST_NAME, LAST_NAME, FULL_NAME  - personal names
+- EMAIL  - email addresses
+- PHONE  - phone numbers (any format)
+- ADDRESS  - full street addresses
+- STREET  - street names
+- CITY  - city names
+- STATE  - state/province names
+- ZIP_CODE  - postal/zip codes
+- COUNTRY  - country names
+- SSN  - Social Security Numbers
+- DATE_OF_BIRTH  - dates of birth
+- MEDICAL_RECORD_NUMBER  - MRNs
+- DIAGNOSIS  - medical diagnoses
+- MEDICATION  - medication names with dosages
+- INSURANCE_ID  - insurance policy numbers
+- ACCOUNT_NUMBER  - bank/financial account numbers
+- ROUTING_NUMBER  - bank routing numbers
+- CREDIT_CARD_NUMBER  - credit card numbers
+- URL  - web addresses
+- IP_ADDRESS  - IPv4/IPv6 addresses
+- USERNAME  - online usernames
+- PASSWORD  - passwords
+- ORGANIZATION_NAME  - company/organization names (only when identifying a specific, named entity  - not generic industry terms)
+- NPI  - National Provider Identifier numbers
+- BUILDING_NUMBER  - building/house numbers
+- FINANCIAL_ID  - FINRA CRD numbers, fund identifiers, etc.
 
 If you encounter PII that doesn't fit these categories, create a descriptive type using UPPER_SNAKE_CASE.
 
@@ -179,15 +179,15 @@ You MUST use context to distinguish PII from non-PII:
 - 0.85-0.94: High confidence, clear context but some ambiguity possible
 - 0.70-0.84: Moderate confidence, context supports PII interpretation
 - 0.50-0.69: Low confidence, ambiguous context, could be PII or not
-- Below 0.50: Do not include — insufficient evidence
+- Below 0.50: Do not include  - insufficient evidence
 
 ## IMPORTANT RULES
 1. Return ONLY the JSON object. No explanations, no markdown formatting, no code blocks.
 2. The "start" and "end" indices MUST exactly match the character positions in the input text.
-3. "end" is EXCLUSIVE — text[start:end] should yield exactly "original_text".
+3. "end" is EXCLUSIVE  - text[start:end] should yield exactly "original_text".
 4. Do NOT modify the input text. Do NOT return rewritten text. Return ONLY span metadata.
 5. If the input contains NO PII, return: {{"entities": []}}
-6. Process the ENTIRE document — do not stop partway through.
+6. Process the ENTIRE document  - do not stop partway through.
 7. Entities must NOT overlap. If a larger span contains a smaller one (e.g., full name contains first and last name), prefer the more granular labeling (separate FIRST_NAME and LAST_NAME) unless the text is clearly a single unit.
 
 ## FEW-SHOT EXAMPLES
@@ -258,13 +258,32 @@ def _map_entity_type(dataset_type: str) -> str:
     return mapping.get(dataset_type, dataset_type)
 
 
-def build_user_prompt(document_text: str) -> str:
+def build_user_prompt(document_text: str, presidio_detections: list = None) -> str:
     """
     Construct the user prompt containing the document to analyze.
-    
-    The document is passed as-is — the system prompt contains all instructions.
-    """
-    return f"""Analyze the following document for PII and return the structured JSON output as specified.
 
+    If Presidio base-pass results are provided, they are included as
+    grounding for the LLM to confirm, adjust, or extend.
+    """
+    presidio_section = ""
+    if presidio_detections:
+        presidio_lines = []
+        for d in presidio_detections:
+            presidio_lines.append(
+                f"  - \"{d.text}\" (type={d.presidio_type}, confidence={d.confidence}, "
+                f"pos={d.start}:{d.end})"
+            )
+        presidio_section = f"""
+
+BASE-PASS DETECTIONS (from a pattern-based detector, provided as grounding):
+These were detected by a rule-based system. Use them as a starting point, but
+apply your own contextual judgment. You may confirm, adjust the type, change
+confidence, or reject any of these. You should also detect PII the base pass missed.
+{chr(10).join(presidio_lines)}
+"""
+
+    return f"""Analyze the following document for PII and return the structured JSON output as specified.
+{presidio_section}
 DOCUMENT:
 {document_text}"""
+
