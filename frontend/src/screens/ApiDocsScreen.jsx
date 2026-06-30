@@ -15,7 +15,7 @@ export default function ApiDocsScreen({ onBack }) {
       </div>
 
       <p className="font-[var(--font-body)] text-lg text-secondary max-w-3xl">
-        Conseal exposes a REST API for programmatic document pseudonymization and verification.
+        This REST API supports programmatic document pseudonymization and verification.
         All endpoints accept and return JSON. The server runs on <code className="font-[var(--font-mono)] bg-surface-high px-1 border border-primary">http://localhost:8000</code>.
       </p>
 

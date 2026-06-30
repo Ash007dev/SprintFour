@@ -46,17 +46,20 @@ export default function FlipTitle({ onClick, className = '' }) {
       ))}
     </span>
   );
+  const Wrapper = onClick ? 'button' : 'span';
 
   return (
-    <button
+    <Wrapper
       onClick={onClick}
-      className={`font-[var(--font-headline)] font-black tracking-tighter text-primary hover:opacity-80 transition-opacity cursor-pointer inline-flex items-baseline ${className}`}
+      className={`font-[var(--font-headline)] font-black tracking-tighter text-primary transition-opacity inline-flex items-baseline ${
+        onClick ? 'hover:opacity-80 cursor-pointer' : ''
+      } ${className}`}
       aria-label="Conseal / Glass Box"
     >
       <span className={`flip-title-shell ${flipping ? 'is-flipping' : ''}`} style={{ '--flip-chars': MAX_CHARS }}>
         {renderWord(WORDS[activeIndex], 'current')}
         {flipping && renderWord(WORDS[nextIndex], 'next')}
       </span>
-    </button>
+    </Wrapper>
   );
 }

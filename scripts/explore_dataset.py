@@ -215,4 +215,4 @@ if __name__ == "__main__":
     examples = select_few_shot_examples(ds)
     save_few_shot_examples(examples)
 
-    print("\n✓ Dataset exploration complete.")
+    print("\n[OK] Dataset exploration complete.")
